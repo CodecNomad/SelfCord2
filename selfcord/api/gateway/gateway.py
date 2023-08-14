@@ -113,6 +113,7 @@ class gateway:
 
     def heartbeat_ack(self):
         self.last_ack = time.perf_counter()
+
         self.latency = self.last_ack - self.last_send
 
     async def call(self, channel: str, guild: str | None =None):
