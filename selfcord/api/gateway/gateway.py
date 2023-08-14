@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from zlib import decompressobj
 import time
 import asyncio
@@ -121,7 +121,7 @@ class gateway:
         self.last_ack = time.perf_counter()
         self.latency = self.last_ack - self.last_send
 
-    async def call(self, channel: str, guild: str | None = None):
+    async def call(self, channel: str, guild: Optional[str] = None):
         payload = {
             "op": 4,
             "d": {
