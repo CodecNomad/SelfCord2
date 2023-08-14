@@ -34,6 +34,8 @@ class gateway:
                     "?encoding=json&v=9&compress=zlib-stream")
         self.zlib: _Decompress = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
+        self.last_ack = 0
+        self.last_send = 0
         self.latency = float("inf")
         self.ws = None
 
@@ -119,7 +121,7 @@ class gateway:
         self.last_ack = time.perf_counter()
         self.latency = self.last_ack - self.last_send
 
-    async def call(self, channel: str, guild: str | None =None):
+    async def call(self, channel: str, guild: str | None = None):
         payload = {
             "op": 4,
             "d": {
