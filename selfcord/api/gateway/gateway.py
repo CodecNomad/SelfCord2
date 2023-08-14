@@ -35,6 +35,7 @@ class gateway:
         self.zlib: _Decompress = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
         self.latency = float("inf")
+        self.ws = None
 
     async def send_json(self, payload: dict):
         await self.ws.send(ujson.dumps(payload))
@@ -64,6 +65,9 @@ class gateway:
         self.ws = websockets.connect(self.url,
                                      origin="https://discord.com",
                                      max_size=None)
+
+    async def close(self):
+        await self.ws.close()
 
     async def identify(self):
         payload = {
@@ -113,7 +117,6 @@ class gateway:
 
     def heartbeat_ack(self):
         self.last_ack = time.perf_counter()
-
         self.latency = self.last_ack - self.last_send
 
     async def call(self, channel: str, guild: str | None =None):
