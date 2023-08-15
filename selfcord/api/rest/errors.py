@@ -30,3 +30,36 @@ class BadRequest(SelfcordException):
                 .replace('@here', '@\u200bhere')
             )
         super().__init__(message, args)
+
+
+class UnknownError(SelfcordException):
+    def __init__(self, message: Optional[str] = None, *args: Any) -> None:
+        if message is not None:
+            message = (
+                message
+                .replace('@everyone', '@\u200beveryone')
+                .replace('@here', '@\u200bhere')
+            )
+        super().__init__(message, args)
+
+
+class NotImplementedError(SelfcordException):
+    def __init__(self, message: Optional[str] = None, *args: Any) -> None:
+        if message is not None:
+            message = (
+                message
+                .replace('@everyone', '@\u200beveryone')
+                .replace('@here', '@\u200bhere')
+            )
+        super().__init__(message, args)
+
+
+class ServiceUnavailable(SelfcordException):
+    def __init__(self, message: Optional[str] = None, *args: Any) -> None:
+        if message is not None:
+            message = (
+                message
+                .replace('@everyone', '@\u200beveryone')
+                .replace('@here', '@\u200bhere')
+            )
+        super().__init__(message, args)
