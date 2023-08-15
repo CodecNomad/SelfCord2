@@ -3,7 +3,6 @@ from typing import Any, Optional
 
 class SelfcordException(Exception):
     """Base Exception Class"""
-    pass
 
 
 class BotException(SelfcordException):

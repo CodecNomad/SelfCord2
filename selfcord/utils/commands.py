@@ -1,6 +1,6 @@
 import inspect
 from typing import Callable, Any, Optional
-from ..errors import CommandException
+from .errors import CommandException
 
 class Command:
     """Command Object pretty much"""

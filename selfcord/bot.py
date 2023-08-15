@@ -1,6 +1,5 @@
 import inspect
-from .errors import BotException
-from .utils import Command, CommandCollection
+from .utils import Command, CommandCollection, BotException
 
 
 class Bot:
