@@ -12,7 +12,7 @@ class Bot:
         self.prefixes: list[str] = prefixes
         self.debug: bool = debug
         self.userbot: bool = userbot
-        self.commands = CommandCollection
+        self.commands = CommandCollection()
         self.token: Optional[str] = None
         self.user: Optional[Client] = None
 
