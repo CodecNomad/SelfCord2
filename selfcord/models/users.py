@@ -1,7 +1,7 @@
 class User:
     def __init__(self, payload: dict):
-        self.name = payload['username']
-        self.id = payload['id']
+        self.name: str = payload['username']
+        self.id: id = int(payload['id'])
         self.discriminator = payload['discriminator']
         self.avatar = payload['avatar']
         self.banner = payload['banner']

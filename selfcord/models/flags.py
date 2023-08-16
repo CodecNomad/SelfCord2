@@ -10,8 +10,8 @@ class Flags:
         self.value = value
         return self
 
-    def __repr__(self) -> int:
-        return self.value
+    def __repr__(self) -> str:
+        return f"{self.value}"
 
 
 

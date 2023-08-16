@@ -3,13 +3,14 @@ from typing import Optional
 import asyncio
 from .utils import Command, CommandCollection, BotException
 from .api import DiscordHttp, Gateway
-from .models import Client
+from .models import Capabilities, Client
 
 
 class Bot:
     def __init__(self, prefixes: list[str], debug: bool = False, userbot: bool = False):
         self.http: DiscordHttp = DiscordHttp()
-        self.gateway: Gateway = Gateway(self)
+        self.capabilities: Capabilities = Capabilities.default()
+        self.gateway: Gateway = Gateway(self, self.capabilities)
         self.prefixes: list[str] = prefixes
         self.debug: bool = debug
         self.userbot: bool = userbot

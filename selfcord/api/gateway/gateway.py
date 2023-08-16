@@ -3,14 +3,15 @@ from typing import TYPE_CHECKING, Optional
 from zlib import decompressobj
 import time
 import asyncio
-
+from .events import Handler
 import websockets
 import ujson
 
 if TYPE_CHECKING:
     from ...bot import Bot
-    from zlib import decompress
+    from zlib import _Decompress
     from websockets import Connect
+    from ...models import Capabilities
 
 
 class Gateway:
@@ -30,10 +31,12 @@ class Gateway:
     HEARTBEAT_ACK = 11
     GUILD_SYNC = 12
 
-    def __init__(self, bot: Bot) -> None:
-        self.bot = bot
+    def __init__(self, bot: Bot, capabilities: Capabilities) -> None:
+        self.capabilities: Capabilities = capabilities
+        self.bot: Bot = bot
+        self.handler: Handler = Handler(bot)
         self.token: Optional[str] = None
-        self.zlib: decompress = decompressobj()
+        self.zlib: _Decompress = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
         self.last_ack: float = 0
         self.last_send: float = 0
@@ -56,7 +59,7 @@ class Gateway:
             if item:
                 op = item["op"]
                 data = item["d"]
-                t = item["t"]
+                event = item["t"]
 
                 if op == self.HELLO:
                     interval = data["heartbeat_interval"] / 1000.0
@@ -67,7 +70,13 @@ class Gateway:
                     self.heartbeat_ack()
 
                 elif op == self.DISPATCH:
-                    print(t)
+                    if hasattr(self.handler, f"handle_{event.lower()}"):
+                        method = getattr(
+                            self.handler, f"handle_{event.lower()}"
+                        )
+                        asyncio.create_task(method(data))
+                    else:
+                        print(event)
 
     async def connect(self):
         self.ws = await websockets.connect(
@@ -90,6 +99,7 @@ class Gateway:
         payload = {
             "op": 2,
             "d": {
+                "capabilities": self.capabilities.value,
                 "token": self.token,
                 "client_state": {
                     "api_code_version": 0,
