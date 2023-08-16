@@ -8,11 +8,16 @@ import websockets
 import ujson
 
 if TYPE_CHECKING:
-    from websockets import Request
+    from ...bot import Bot
     from zlib import _Decompress
 
 
-class gateway:
+class Gateway:
+
+    URL = (
+        "wss://gateway.discord.gg/"
+        "?encoding=json&v=9&compress=zlib-stream"
+    )
 
     DISPATCH = 0
     HEARTBEAT = 1
@@ -28,16 +33,16 @@ class gateway:
     HEARTBEAT_ACK = 11
     GUILD_SYNC = 12
 
-    def __init__(self, token: str) -> None:
-        self.token: str = token
-        self.url = ("wss://gateway.discord.gg/"
-                    "?encoding=json&v=9&compress=zlib-stream")
+    def __init__(self, bot: Bot) -> None:
+        self.bot = bot
+        self.token: Optional[str] = None
         self.zlib: _Decompress = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
-        self.last_ack = 0
-        self.last_send = 0
-        self.latency = float("inf")
+        self.last_ack: float = 0
+        self.last_send: float = 0
+        self.latency: float = float("inf")
         self.ws = None
+        self.alive = False
 
     async def send_json(self, payload: dict):
         await self.ws.send(ujson.dumps(payload))
@@ -61,14 +66,21 @@ class gateway:
             elif op == self.HEARTBEAT_ACK:
                 self.heartbeat_ack()
 
-
-
     async def connect(self):
-        self.ws = websockets.connect(self.url,
+        self.ws = websockets.connect(self.URL,
                                      origin="https://discord.com",
                                      max_size=None)
 
+    async def start(self, token: str):
+        await self.connect()
+        self.alive = True
+        self.token = token
+        while self.alive:
+            await self.recv_json()
+
+
     async def close(self):
+        self.alive = False
         await self.ws.close()
 
     async def identify(self):

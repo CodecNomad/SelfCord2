@@ -1,13 +1,20 @@
 import inspect
+from typing import Optional
+import asyncio
 from .utils import Command, CommandCollection, BotException
-
+from .api import discord_http, Gateway
+from .models import Client
 
 class Bot:
     def __init__(self, prefixes: list[str], debug: bool = False, userbot: bool = False):
-        self.prefixes = prefixes
-        self.debug = debug
-        self.userbot = userbot
+        self.http: discord_http = discord_http()
+        self.gateway: Gateway = Gateway(self)
+        self.prefixes: list[str] = prefixes
+        self.debug: bool = debug
+        self.userbot: bool = userbot
         self.commands = CommandCollection
+        self.token: Optional[str] = None
+        self.user: Optional[Client] = None
 
     def cmd(self, description="", aliases=[]):
         """Decorator to add commands for the bot
@@ -33,3 +40,14 @@ class Bot:
             return cmd
 
         return decorator
+
+    def run(self, token: str):
+        async def runner():
+            data = await self.http.static_login(token)
+            self.user = Client(data)
+            await self.gateway.start(token)
+
+        asyncio.run(runner())
+
+
+

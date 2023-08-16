@@ -2,7 +2,7 @@ from typing import Optional
 import asyncio
 from aiohttp import ClientSession, ClientResponse, TCPConnector
 from aiohttp.client_exceptions import ClientConnectionError
-from errors import (
+from .errors import (
     BadRequest,
     LoginFailure,
     Unauthorised,
@@ -20,7 +20,7 @@ class discord_http:
         self.token: Optional[str] = None
         self.fingerprint: Optional[str] = None
         self.cookie: Optional[str] = None
-        self.session: Optional[ClientSession] = self.create_session()
+        self.session: Optional[ClientSession] = None
 
     async def client_error(self, resp: ClientResponse):
         if resp.status == 429:
@@ -55,7 +55,7 @@ class discord_http:
         text = await resp.text()
         raise UnknownError(text, resp.status)
 
-    def create_session(self):
+    async def create_session(self):
         headers = {
             "Accept-Encoding":
             "gzip, deflate, br",
@@ -132,7 +132,7 @@ class discord_http:
 
     async def get_cookie(self):
         if self.session is None:
-            self.session = self.create_session()
+            self.session = await self.create_session()
 
         resp = await self.session.request("GET", "https://discord.com")
         dcf = (
@@ -151,7 +151,6 @@ class discord_http:
             else ""
         )
         self.cookie = f"__dcfduid={dcf};__sdcfduid={sdc};__cfruid={cfr}"
-
 
     async def static_login(self, token: str):
         self.token = token
@@ -181,15 +180,8 @@ class discord_http:
                         await self.server_error(resp)
 
                 else:
-                    self.session = self.create_session()
+                    self.session = await self.create_session()
 
             except ClientConnectionError:
                 await self.close()
-                self.session = self.create_session()
-
-
-if __name__ == "__main__":
-    async def main():
-        req = discord_http()
-        await req.get_cookie()
-    asyncio.run(main())
+                self.session = await self.create_session()

@@ -1,8 +1,8 @@
 
 class User:
     def __init__(self, payload: dict):
-
-        self.name = payload['name']
+        print(payload)
+        self.name = payload['username']
         self.id = payload['id']
         self.discriminator = payload['discriminator']
         self.avatar = payload['avatar']
@@ -15,3 +15,13 @@ class User:
 
 
     # TODO: when http is correctly made I will add methods
+
+
+class Client(User):
+    def __init__(self, payload: dict):
+        super().__init__(payload)
+
+
+class Member(User):
+    def __init__(self, payload: dict):
+        super().__init__(payload)
