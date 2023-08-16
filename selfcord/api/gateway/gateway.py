@@ -10,6 +10,7 @@ import ujson
 if TYPE_CHECKING:
     from ...bot import Bot
     from zlib import decompress
+    from websockets import Connect
 
 
 class Gateway:
@@ -37,7 +38,7 @@ class Gateway:
         self.last_ack: float = 0
         self.last_send: float = 0
         self.latency: float = float("inf")
-        self.ws
+        self.ws: Connect
         self.alive = False
 
     async def send_json(self, payload: dict):
@@ -67,7 +68,7 @@ class Gateway:
                 print(t)
 
     async def connect(self):
-        self.ws = await websockets.connect(
+        self.ws: Connect = await websockets.connect(
             self.URL, origin="https://discord.com", max_size=None
         )
 
