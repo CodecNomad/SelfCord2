@@ -29,6 +29,7 @@ class User:
         self.banner_color: Optional[str] = payload.get("banner_color")
         self.accent_color: Optional[str] = payload.get("accent_color")
         self.display_name: Optional[str] = payload.get("global_name")
+        self.flags: Optional[int] = payload.get("flags")
         self.avatar_decoration: Optional[str] = payload.get("avatar_decoration")
         self.is_bot = (
             payload['bot']
@@ -41,9 +42,31 @@ class User:
 
 class Client(User):
     def __init__(self, payload: dict, bot: Bot):
+        self.bot = bot
+        self.http = bot.http
+        self.guilds = []  # TODO: Create Guild class
+        self.friends: list[User] = []
+        self.blocked: list[User] = []
+        self.cached_users: list[User] = []
+        self._update(payload)
         super().__init__(payload, bot)
+
+    def _update(self, payload: dict):
+        self.verified = payload.get("verified")
+        self.purchased_flags = payload.get("purchased_flags")
+        self.pronouns = payload.get("pronouns")
+        self.premium_type = payload.get("premium_type")
+        self.phone = payload.get("phone")
+        self.nsfw = payload.get("nsfw_allowed")
+        self.mobile = payload.get("mobile")
+        self.desktop = payload.get("desktop")
+        self.mfa = payload.get("mfa_enabled")
 
 
 class Member(User):
     def __init__(self, payload: dict, bot: Bot):
+        self.bot = bot
+        self.http = bot.http
+        self.roles = []  # TODO: Create Role class
+        self.permissions = 0  # TODO: Create Permission class
         super().__init__(payload, bot)

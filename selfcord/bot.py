@@ -1,10 +1,13 @@
 from __future__ import annotations
 import inspect
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 import asyncio
 from .utils import Command, CommandCollection, BotException
 from .api import DiscordHttp, Gateway
 from .models import Capabilities, Client
+
+if TYPE_CHECKING:
+    from .models import User
 
 
 class Bot:
