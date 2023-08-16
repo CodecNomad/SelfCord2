@@ -38,37 +38,39 @@ class Gateway:
         self.last_ack: float = 0
         self.last_send: float = 0
         self.latency: float = float("inf")
-        self.ws: Connect
+        self.ws: Optional[Connect] = None
         self.alive = False
 
     async def send_json(self, payload: dict):
-        await self.ws.send(ujson.dumps(payload))
+        if self.ws:
+            await self.ws.send(ujson.dumps(payload))
 
     async def recv_json(self):
-        item = await self.ws.recv()
-        buffer = bytearray()
-        buffer.extend(item)
-        if len(item) < 4 or item[-4:] != self.zlib_suffix:
-            return
-        item = ujson.loads(self.zlib.decompress(item))
-        if item:
-            op = item["op"]
-            data = item["d"]
-            t = item["t"]
-             
-            if op == self.HELLO:
-                interval = data["heartbeat_interval"] / 1000.0
-                await self.identify()
-                asyncio.create_task(self.heartbeat(interval))
+        if self.ws:
+            item = await self.ws.recv()
+            buffer = bytearray()
+            buffer.extend(item)
+            if len(item) < 4 or item[-4:] != self.zlib_suffix:
+                return
+            item = ujson.loads(self.zlib.decompress(item))
+            if item:
+                op = item["op"]
+                data = item["d"]
+                t = item["t"]
 
-            elif op == self.HEARTBEAT_ACK:
-                self.heartbeat_ack()
+                if op == self.HELLO:
+                    interval = data["heartbeat_interval"] / 1000.0
+                    await self.identify()
+                    asyncio.create_task(self.heartbeat(interval))
 
-            elif op == self.DISPATCH:
-                print(t)
+                elif op == self.HEARTBEAT_ACK:
+                    self.heartbeat_ack()
+
+                elif op == self.DISPATCH:
+                    print(t)
 
     async def connect(self):
-        self.ws: Connect = await websockets.connect(
+        self.ws = await websockets.connect(
             self.URL, origin="https://discord.com", max_size=None
         )
 
