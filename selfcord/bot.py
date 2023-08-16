@@ -11,7 +11,12 @@ if TYPE_CHECKING:
 
 
 class Bot:
-    def __init__(self, prefixes: list[str], debug: bool = False, userbot: bool = False):
+    def __init__(
+        self,
+        prefixes: list[str],
+        debug: bool = False,
+        userbot: bool = False
+    ):
         self.http: DiscordHttp = DiscordHttp(self)
         self.capabilities: Capabilities = Capabilities.default()
         self.gateway: Gateway = Gateway(self)
@@ -23,15 +28,6 @@ class Bot:
         self.user: Optional[Client] = None
 
     def cmd(self, description="", aliases=None):
-        """Decorator to add commands for the bot
-
-        Args:
-            description (str, optional): Description of command. Defaults to "".
-            aliases (list, optional): Alternative names for command. Defaults to [].
-
-        Raises:
-            RuntimeWarning: If you suck and don't use a coroutine
-        """
         if aliases is None:
             aliases = []
         if isinstance(aliases, str):
