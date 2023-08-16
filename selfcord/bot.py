@@ -2,7 +2,7 @@ import inspect
 from typing import Optional
 import asyncio
 from .utils import Command, CommandCollection, BotException
-from .api import discord_http, Gateway
+from .api import discord_http, gateway
 from .models import Client
 
 class Bot:

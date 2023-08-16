@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from zlib import _Decompress
 
 
-class Gateway:
+class gateway:
 
     URL = (
         "wss://gateway.discord.gg/"
