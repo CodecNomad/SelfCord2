@@ -6,8 +6,7 @@ from .utils import Command, CommandCollection, BotException
 from .api import DiscordHttp, Gateway
 from .models import Capabilities, Client
 
-if TYPE_CHECKING:
-    from .models import User
+
 
 
 class Bot:
