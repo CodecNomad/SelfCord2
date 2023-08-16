@@ -1,2 +1,2 @@
-from .rest import discord_http
+from .rest import DiscordHttp
 from .gateway import Gateway

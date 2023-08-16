@@ -6,14 +6,49 @@ from .errors import (
     BadRequest,
     LoginFailure,
     Unauthorised,
-    NotImplementedError,
+    NonImplementedError,
     UnknownError,
     ServiceUnavailable,
 )
 import ujson
 
 
-class discord_http:
+async def client_error(resp: ClientResponse):
+    if resp.status == 429:
+        json = await resp.json()
+        await asyncio.sleep(json["retry_after"])
+
+    elif resp.status == 400:
+        text = await resp.text()
+        raise BadRequest(text, resp.status)
+
+    elif resp.status == 401:
+        text = await resp.text()
+        raise LoginFailure(text, resp.status)
+
+    elif resp.status == 403:
+        text = await resp.text()
+        raise Unauthorised(text, resp.status)
+
+    else:
+        text = await resp.text()
+        raise UnknownError(text, resp.status)
+
+
+async def server_error(resp: ClientResponse):
+    if resp.status == 501:
+        text = await resp.text()
+        raise NonImplementedError(text, resp.status)
+
+    if resp.status == 503:
+        text = await resp.text()
+        raise ServiceUnavailable(text, resp.status)
+
+    text = await resp.text()
+    raise UnknownError(text, resp.status)
+
+
+class DiscordHttp:
     ROOT = "https://canary.discord.com/api/v9"
 
     def __init__(self) -> None:
@@ -21,39 +56,6 @@ class discord_http:
         self.fingerprint: Optional[str] = None
         self.cookie: Optional[str] = None
         self.session: Optional[ClientSession] = None
-
-    async def client_error(self, resp: ClientResponse):
-        if resp.status == 429:
-            json = await resp.json()
-            await asyncio.sleep(json["retry_after"])
-
-        elif resp.status == 400:
-            text = await resp.text()
-            raise BadRequest(text, resp.status)
-
-        elif resp.status == 401:
-            text = await resp.text()
-            raise LoginFailure(text, resp.status)
-
-        elif resp.status == 403:
-            text = await resp.text()
-            raise Unauthorised(text, resp.status)
-
-        else:
-            text = await resp.text()
-            raise UnknownError(text, resp.status)
-
-    async def server_error(self, resp: ClientResponse):
-        if resp.status == 501:
-            text = await resp.text()
-            raise NotImplementedError(text, resp.status)
-
-        if resp.status == 503:
-            text = await resp.text()
-            raise ServiceUnavailable(text, resp.status)
-
-        text = await resp.text()
-        raise UnknownError(text, resp.status)
 
     async def create_session(self):
         headers = {
@@ -163,21 +165,21 @@ class discord_http:
             await self.session.close()
             self.session = None
 
-    async def request(self, method: str, endpoint: str, *args, **kwargs):
+    async def request(self, method: str, endpoint: str, **kwargs):
         while True:
             try:
                 if self.session is not None:
                     resp = await self.session.request(method,
                                                       self.ROOT + endpoint,
-                                                      *args, **kwargs)
+                                                      **kwargs)
                     if resp.ok:
                         return await resp.json()
 
                     if 399 < resp.status < 500:
-                        await self.client_error(resp)
+                        await client_error(resp)
 
                     if 499 < resp.status < 600:
-                        await self.server_error(resp)
+                        await server_error(resp)
 
                 else:
                     self.session = await self.create_session()

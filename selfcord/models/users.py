@@ -1,4 +1,3 @@
-
 class User:
     def __init__(self, payload: dict):
         print(payload)
@@ -12,7 +11,6 @@ class User:
         self.display_name = payload['global_name']
         self.avatar_decoration = payload['avatar_decoration']
         self.is_bot = payload['bot']
-
 
     # TODO: when http is correctly made I will add methods
 

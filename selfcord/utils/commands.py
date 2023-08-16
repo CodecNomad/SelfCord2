@@ -1,6 +1,7 @@
 import inspect
-from typing import Callable, Any, Optional
+from typing import Callable, Any, Optional, List, Type
 from .errors import CommandException
+
 
 class Command:
     """Command Object pretty much"""
@@ -15,9 +16,10 @@ class Command:
 
 
 class CommandCollection:
-    """Commands collection, where commands are stored into. Utilised for help commands and general command invocation."""
+    """Commands collection, where commands are stored into. Utilised for help commands and general command
+    invocation."""
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.commands: dict[Command, Callable] = {}
         self.recent_commands: dict[Command, Callable] = {}
 
@@ -41,18 +43,18 @@ class CommandCollection:
                 return alias in command.aliases
         return False
 
-    def append(self, collection):
+    def append(self, collection: List[Type[Command]]):
         """Append to commands, and recent_commands
 
         Args:
             collection (CommandCollection): Collection instance
 
         Raises:
-            ValueError: Collection must be subclass of CommandCollection
+            ValueError: Collection must be subclassed of CommandCollection
         """
         if not isinstance(collection, CommandCollection):
             raise RuntimeError(
-                "Collection is not a subclass of CommandCollection"
+                "Collection is not a subclassed of CommandCollection"
             )
         for item in collection:
             self.commands[item.name] = item

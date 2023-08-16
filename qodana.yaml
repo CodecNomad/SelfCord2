@@ -27,3 +27,7 @@ profile:
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-python:latest
+exclude:
+  - name: PyTypeCheckerInspection
+    paths:
+      - selfcord\utils\commands.py

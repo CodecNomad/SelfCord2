@@ -9,11 +9,10 @@ import ujson
 
 if TYPE_CHECKING:
     from ...bot import Bot
-    from zlib import _Decompress
+    from zlib import decompress
 
 
 class Gateway:
-
     URL = (
         "wss://gateway.discord.gg/"
         "?encoding=json&v=9&compress=zlib-stream"
@@ -36,7 +35,7 @@ class Gateway:
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.token: Optional[str] = None
-        self.zlib: _Decompress = decompressobj()
+        self.zlib: decompress = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
         self.last_ack: float = 0
         self.last_send: float = 0
@@ -56,7 +55,7 @@ class Gateway:
         if item:
             op = item['op']
             data = item['d']
-            event = item['t']
+            _ = item['t']
 
             if op == self.HELLO:
                 interval = data["heartbeat_interval"] / 1000.0
@@ -77,7 +76,6 @@ class Gateway:
         self.token = token
         while self.alive:
             await self.recv_json()
-
 
     async def close(self):
         self.alive = False
@@ -123,10 +121,10 @@ class Gateway:
         await self.send_json(payload)
 
     async def heartbeat(self, interval: int):
-        heartbeatJSON = {"op": 1, "d": time.time()}
+        heartbeat_json = {"op": 1, "d": time.time()}
         while True:
             await asyncio.sleep(interval)
-            await self.send_json(heartbeatJSON)
+            await self.send_json(heartbeat_json)
             self.last_send = time.perf_counter()
 
     def heartbeat_ack(self):

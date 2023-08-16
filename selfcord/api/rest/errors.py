@@ -43,7 +43,7 @@ class UnknownError(SelfcordException):
         super().__init__(message, args)
 
 
-class NotImplementedError(SelfcordException):
+class NonImplementedError(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
             message = (
