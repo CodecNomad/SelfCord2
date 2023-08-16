@@ -1,27 +1,28 @@
 from typing import Optional
 import asyncio
-import aiohttp
+from aiohttp import ClientSession, ClientResponse, TCPConnector
 from aiohttp.client_exceptions import ClientConnectionError
-from .errors import (
+from errors import (
     BadRequest,
     LoginFailure,
     Unauthorised,
-    NotImplemented,
+    NotImplementedError,
     UnknownError,
     ServiceUnavailable,
 )
 import ujson
 
 
-class http:
+class discord_http:
     ROOT = "https://canary.discord.com/api/v9"
 
     def __init__(self) -> None:
         self.token: Optional[str] = None
         self.fingerprint: Optional[str] = None
-        self.session: Optional[aiohttp.ClientSession] = self.create_session()
+        self.cookie: Optional[str] = None
+        self.session: Optional[ClientSession] = self.create_session()
 
-    async def client_error(self, resp: aiohttp.ClientResponse):
+    async def client_error(self, resp: ClientResponse):
         if resp.status == 429:
             json = await resp.json()
             await asyncio.sleep(json["retry_after"])
@@ -42,7 +43,7 @@ class http:
             text = await resp.text()
             raise UnknownError(text, resp.status)
 
-    async def server_error(self, resp: aiohttp.ClientResponse):
+    async def server_error(self, resp: ClientResponse):
         if resp.status == 501:
             text = await resp.text()
             raise NotImplementedError(text, resp.status)
@@ -110,9 +111,9 @@ class http:
             additional_headers = {"x-fingerprint": self.fingerprint}
 
         headers.update(additional_headers)
-        return aiohttp.ClientSession(
+        return ClientSession(
             headers=headers,
-            connector=aiohttp.TCPConnector(
+            connector=TCPConnector(
                 ssl=False,
                 keepalive_timeout=10,
                 ttl_dns_cache=204,
@@ -126,12 +127,35 @@ class http:
         )
 
     async def get_fingerprint(self):
-        self.fingerprint = (await self.request("get",
+        self.fingerprint = (await self.request("GET",
                                                "/experiments"))["fingerprint"]
+
+    async def get_cookie(self):
+        if self.session is None:
+            self.session = self.create_session()
+
+        resp = await self.session.request("GET", "https://discord.com")
+        dcf = (
+            resp.cookies["__dcfduid"].coded_value
+            if resp.cookies.get("__dcfduid") is not None
+            else ""
+        )
+        sdc = (
+            resp.cookies["__sdcfduid"].coded_value
+            if resp.cookies.get("__sdcfduid") is not None
+            else ""
+        )
+        cfr = (
+            resp.cookies["__cfruid "].coded_value
+            if resp.cookies.get("__cfruid") is not None
+            else ""
+        )
+        self.cookie = f"__dcfduid={dcf};__sdcfduid={sdc};__cfruid={cfr}"
+
 
     async def static_login(self, token: str):
         self.token = token
-        return await self.request("get",
+        return await self.request("GET",
                                   "/users/@me",
                                   headers={"authorization": token})
 
@@ -162,3 +186,10 @@ class http:
             except ClientConnectionError:
                 await self.close()
                 self.session = self.create_session()
+
+
+if __name__ == "__main__":
+    async def main():
+        req = discord_http()
+        await req.get_cookie()
+    asyncio.run(main())
