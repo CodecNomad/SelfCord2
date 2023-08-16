@@ -9,7 +9,6 @@ import ujson
 
 if TYPE_CHECKING:
     from ...bot import Bot
-    from zlib import _Decompress
     from websockets import Connect
     from ...models import Capabilities
 
@@ -31,12 +30,12 @@ class Gateway:
     HEARTBEAT_ACK = 11
     GUILD_SYNC = 12
 
-    def __init__(self, bot: Bot, capabilities: Capabilities) -> None:
-        self.capabilities: Capabilities = capabilities
+    def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
+        self.capabilities: Capabilities = self.bot.capabilities
         self.handler: Handler = Handler(bot)
         self.token: Optional[str] = None
-        self.zlib: _Decompress = decompressobj()
+        self.zlib = decompressobj()
         self.zlib_suffix: bytes = b"\x00\x00\xff\xff"
         self.last_ack: float = 0
         self.last_send: float = 0

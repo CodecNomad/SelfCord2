@@ -1,4 +1,5 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
 import asyncio
 from aiohttp import ClientSession, ClientResponse, TCPConnector
 from aiohttp.client_exceptions import ClientConnectionError
@@ -11,6 +12,9 @@ from .errors import (
     ServiceUnavailable,
 )
 import ujson
+
+if TYPE_CHECKING:
+    from ...bot import Bot
 
 
 async def client_error(resp: ClientResponse):
@@ -51,7 +55,8 @@ async def server_error(resp: ClientResponse):
 class DiscordHttp:
     ROOT = "https://canary.discord.com/api/v9"
 
-    def __init__(self) -> None:
+    def __init__(self, bot: Bot) -> None:
+        self.bot = bot
         self.token: Optional[str] = None
         self.fingerprint: Optional[str] = None
         self.cookie: Optional[str] = None

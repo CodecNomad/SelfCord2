@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from typing import Optional
 import asyncio
@@ -8,9 +9,9 @@ from .models import Capabilities, Client
 
 class Bot:
     def __init__(self, prefixes: list[str], debug: bool = False, userbot: bool = False):
-        self.http: DiscordHttp = DiscordHttp()
+        self.http: DiscordHttp = DiscordHttp(self)
         self.capabilities: Capabilities = Capabilities.default()
-        self.gateway: Gateway = Gateway(self, self.capabilities)
+        self.gateway: Gateway = Gateway(self)
         self.prefixes: list[str] = prefixes
         self.debug: bool = debug
         self.userbot: bool = userbot
@@ -49,7 +50,7 @@ class Bot:
         async def runner():
             try:
                 data = await self.http.static_login(token)
-                self.user = Client(data)
+                self.user = Client(data, self)
                 await self.gateway.start(token)
             except KeyboardInterrupt:
                 await self.http.close()

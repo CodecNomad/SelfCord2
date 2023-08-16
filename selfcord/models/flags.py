@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Self, Type
 
 class Flags:
@@ -14,9 +15,8 @@ class Flags:
         return f"{self.value}"
 
 
-
 class Capabilities(Flags):
-    
+
     @classmethod
     def default(cls):
         """Utilise default values for optimal anti-flag"""

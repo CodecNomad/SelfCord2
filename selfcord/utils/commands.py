@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from typing import Callable, Any, Optional, List, Type
 from .errors import CommandException
