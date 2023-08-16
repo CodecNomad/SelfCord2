@@ -17,12 +17,12 @@ class User:
         self.id: int = payload['id']
         self.discriminator: Optional[str] = payload.get("discriminator")
         self.avatar: Optional[Asset] = (
-            Asset(self.id, payload['avatar'])
+            Asset(self.id, payload['avatar']).from_avatar()
             if payload.get("avatar") is not None
             else None
         )
         self.banner: Optional[Asset] = (
-            Asset(self.id, payload['banner'])
+            Asset(self.id, payload['banner']).from_avatar()
             if payload.get("banner") is not None
             else None
         )

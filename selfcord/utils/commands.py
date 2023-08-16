@@ -9,7 +9,9 @@ class Command:
 
     def __init__(self, **kwargs):
         self.name: Optional[str] = kwargs.get("name")
-        self.aliases: Optional[list[str]] = [self.name] + kwargs.get("aliases", [])
+        self.aliases: Optional[list[str]] = [
+            self.name
+        ] + kwargs.get("aliases", [])
         self.description: Optional[str] = kwargs.get("description")
         self.func: Callable = kwargs['func']
         self.check: Any = inspect.signature(self.func).return_annotation

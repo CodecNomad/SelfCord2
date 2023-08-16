@@ -5,14 +5,17 @@ class Asset:
         self._update(id, hash)
 
     def _update(self, id: int, hash: str):
-        self.id = id
-        self.hash = hash
-        self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.png?size=4096"
-        if self.hash.startswith("a_"):
-            self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.gif?size=4096"
+        self.id: int = id
+        self.hash: str = hash
+        self.url: str = ""
 
     def __str__(self) -> str:
         return self.url
+
+    def from_avatar(self):
+        self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.png?size=4096"
+        if self.hash.startswith("a_"):
+            self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.gif?size=4096"
 
     @property
     def is_animated(self):
