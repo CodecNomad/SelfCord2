@@ -13,10 +13,7 @@ if TYPE_CHECKING:
 
 
 class Gateway:
-    URL = (
-        "wss://gateway.discord.gg/"
-        "?encoding=json&v=9&compress=zlib-stream"
-    )
+    URL = "wss://gateway.discord.gg/" "?encoding=json&v=9&compress=zlib-stream"
 
     DISPATCH = 0
     HEARTBEAT = 1
@@ -40,7 +37,7 @@ class Gateway:
         self.last_ack: float = 0
         self.last_send: float = 0
         self.latency: float = float("inf")
-        self.ws = None
+        self.ws
         self.alive = False
 
     async def send_json(self, payload: dict):
@@ -52,11 +49,12 @@ class Gateway:
         buffer.extend(item)
         if len(item) < 4 or item[-4:] != self.zlib_suffix:
             return
+        item = ujson.loads(self.zlib.decompress(item))
         if item:
-            op = item['op']
-            data = item['d']
-            _ = item['t']
-
+            op = item["op"]
+            data = item["d"]
+            t = item["t"]
+             
             if op == self.HELLO:
                 interval = data["heartbeat_interval"] / 1000.0
                 await self.identify()
@@ -65,10 +63,13 @@ class Gateway:
             elif op == self.HEARTBEAT_ACK:
                 self.heartbeat_ack()
 
+            elif op == self.DISPATCH:
+                print(t)
+
     async def connect(self):
-        self.ws = websockets.connect(self.URL,
-                                     origin="https://discord.com",
-                                     max_size=None)
+        self.ws = await websockets.connect(
+            self.URL, origin="https://discord.com", max_size=None
+        )
 
     async def start(self, token: str):
         await self.connect()
@@ -79,7 +80,8 @@ class Gateway:
 
     async def close(self):
         self.alive = False
-        await self.ws.close()
+        if self.ws:
+            await self.ws.close()
 
     async def identify(self):
         payload = {
@@ -100,21 +102,23 @@ class Gateway:
                     "activities": [],
                     "afk": False,
                     "since": 0,
-                    "status": "dnd"
+                    "status": "dnd",
                 },
                 "properties": {
                     "os": "Android",
                     "browser": "Discord Android",
                     "device": "Discord Android",
-                    "browser_useragent": ("Mozilla/5.0 (X11; Linux x86_64)"
-                                          "AppleWebKit/537.36 "
-                                          "(KHTML, like Gecko) "
-                                          "discord/0.0.157 "
-                                          "Chrome/108.0.5359.215 "
-                                          "Electron/22.3.2 "
-                                          "Safari/537.36"),
+                    "browser_useragent": (
+                        "Mozilla/5.0 (X11; Linux x86_64)"
+                        "AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) "
+                        "discord/0.0.157 "
+                        "Chrome/108.0.5359.215 "
+                        "Electron/22.3.2 "
+                        "Safari/537.36"
+                    ),
                     "system-locale": "en-GB",
-                    "os_arch": "x64"
+                    "os_arch": "x64",
                 },
             },
         }

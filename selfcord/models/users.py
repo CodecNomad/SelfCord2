@@ -1,6 +1,5 @@
 class User:
     def __init__(self, payload: dict):
-        print(payload)
         self.name = payload['username']
         self.id = payload['id']
         self.discriminator = payload['discriminator']
@@ -10,7 +9,11 @@ class User:
         self.accent_color = payload['accent_color']
         self.display_name = payload['global_name']
         self.avatar_decoration = payload['avatar_decoration']
-        self.is_bot = payload['bot']
+        self.is_bot = (
+            payload['bot']
+            if payload.get('bot') is not None
+            else False
+        )
 
     # TODO: when http is correctly made I will add methods
 

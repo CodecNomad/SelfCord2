@@ -46,8 +46,12 @@ class Bot:
 
     def run(self, token: str):
         async def runner():
-            data = await self.http.static_login(token)
-            self.user = Client(data)
-            await self.gateway.start(token)
+            try:
+                data = await self.http.static_login(token)
+                self.user = Client(data)
+                await self.gateway.start(token)
+            except KeyboardInterrupt:
+                await self.http.close()
+                await self.gateway.close()
 
         asyncio.run(runner())
