@@ -1,10 +1,6 @@
-from ..api import http
-from ..bot import Bot
 
 class User:
-    def __init__(self, http: http, bot: Bot, payload: dict):
-        self.http = http
-        self.bot = bot
+    def __init__(self, payload: dict):
 
         self.name = payload['name']
         self.id = payload['id']
