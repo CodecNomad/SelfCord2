@@ -14,23 +14,17 @@ class Guild:
 
     def _update(self, payload: dict):
         self.emojis: Optional[list[Emoji]] = (
-            [
-                Emoji(emoji, self.bot) for emoji in payload['emojis']
-            ]
+            [Emoji(emoji, self.bot) for emoji in payload["emojis"]]
             if payload.get("emojis") is not None
             else None
         )
         self.stickers: Optional[list[Sticker]] = (
-            [
-                Sticker(sticker, self.bot) for sticker in payload['stickers']
-            ]
+            [Sticker(sticker, self.bot) for sticker in payload["stickers"]]
             if payload.get("stickers") is not None
             else None
         )
         self.roles: Optional[list[Role]] = (
-            [
-                Role(role, self.bot) for role in payload['roles']
-            ]
+            [Role(role, self.bot) for role in payload["roles"]]
             if payload.get("roles") is not None
             else None
         )
@@ -66,19 +60,23 @@ class Guild:
             self.system_channel_flags: Optional[int] = properties.get(
                 "system_channel_flags"
             )
-            self.inventory_settings: Optional[str] = properties.get("inventory_settings")
+            self.inventory_settings: Optional[str] = properties.get(
+                "inventory_settings"
+            )
             self.default_message_notifications: Optional[int] = properties.get(
                 "default_message_notifications"
             )
             self.hub_type: Optional[int] = properties.get("hub_type")
             self.afk_channel: Optional[int] = properties.get("afk_channel")
-            self.incidents_data: Optional[int] = properties.get("incidents_data")
+            self.incidents_data: Optional[int] = properties.get(
+                "incidents_data")
             self.discovery_splash: Optional[Asset] = (
                 Asset(self.id, properties["discovery_splash"])
                 if properties.get("discovery_splash") is not None
                 else None
             )
-            self.preferred_locale: Optional[str] = properties.get("preferred_locale")
+            self.preferred_locale: Optional[str] = properties.get(
+                "preferred_locale")
             self.icon: Optional[Asset] = (
                 Asset(self.id, properties["icon"]).from_icon()
                 if properties.get("discovery_splash") is not None
@@ -87,13 +85,19 @@ class Guild:
             self.latest_onboarding_question_id: Optional[int] = properties.get(
                 "latest_onboarding_question_id"
             )
-            self.explicit_content_filter: Optional[int] = properties.get("explicit_content_filter")
+            self.explicit_content_filter: Optional[int] = properties.get(
+                "explicit_content_filter"
+            )
             self.description: Optional[str] = properties.get("description")
             self.afk_timeout: Optional[int] = properties.get("afk_timeout")
-            self.max_video_channel_users: Optional[int] = properties.get("max_video_channel_users")
+            self.max_video_channel_users: Optional[int] = properties.get(
+                "max_video_channel_users"
+            )
             self.nsfw: Optional[bool] = properties.get("nsfw")
-            self.system_channel_id: Optional[int] = properties.get("system_channel_id")
-            self.rules_channel_id: Optional[int] = properties.get("rules_channel_id")
+            self.system_channel_id: Optional[int] = properties.get(
+                "system_channel_id")
+            self.rules_channel_id: Optional[int] = properties.get(
+                "rules_channel_id")
             self.max_stage_video_channel_users: Optional[int] = properties.get(
                 "max_stage_video_channel_users"
             )
@@ -102,18 +106,25 @@ class Guild:
                 if properties.get("banner") is not None
                 else None
             )
-            self.public_updates_channel_id: Optional[int] = properties.get("public_updates_channel_id")
+            self.public_updates_channel_id: Optional[int] = properties.get(
+                "public_updates_channel_id"
+            )
             self.mfa_level: Optional[int] = properties.get("mfa_level")
             self.features: Optional[list[str]] = properties.get("features")
             self.max_members: Optional[int] = properties.get("max_members")
             self.name: Optional[str] = properties.get("name")
-            self.safety_alerts_channel_id: Optional[int] = properties.get("safety_alerts_channel_id")
+            self.safety_alerts_channel_id: Optional[int] = properties.get(
+                "safety_alerts_channel_id"
+            )
             self.premium_progress_bar_enabled: Optional[bool] = properties.get(
                 "premium_progress_bar_enabled"
             )
-            self.verification_level: Optional[int] = properties.get("verification_level")
+            self.verification_level: Optional[int] = properties.get(
+                "verification_level"
+            )
             self.home_header: Optional[str] = properties.get("home_header")
-            self.vanity_url_code: Optional[str] = properties.get("vanity_url_code")
+            self.vanity_url_code: Optional[str] = properties.get(
+                "vanity_url_code")
 
 
 class Emoji:

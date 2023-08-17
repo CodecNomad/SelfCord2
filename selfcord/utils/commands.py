@@ -10,10 +10,9 @@ class Command:
     def __init__(self, **kwargs):
         self.name: Optional[str] = kwargs.get("name")
         self.aliases: Optional[list[str]] = [
-            self.name
-        ] + kwargs.get("aliases", [])
+            self.name] + kwargs.get("aliases", [])
         self.description: Optional[str] = kwargs.get("description")
-        self.func: Callable = kwargs['func']
+        self.func: Callable = kwargs["func"]
         self.check: Any = inspect.signature(self.func).return_annotation
         self.signature: Any = inspect.signature(self.func).parameters.items()
 
@@ -57,8 +56,7 @@ class CommandCollection:
         """
         if not isinstance(collection, CommandCollection):
             raise RuntimeError(
-                "Collection is not a subclassed of CommandCollection"
-            )
+                "Collection is not a subclassed of CommandCollection")
         for item in collection:
             self.commands[item.name] = item
             self.recent_commands[item.name] = item
@@ -77,8 +75,7 @@ class CommandCollection:
             raise CommandException("cmd is not a subclass of Command")
         if self._is_already_registered(cmd):
             raise CommandException(
-                "Command Name or Alias is already registered"
-            )
+                "Command Name or Alias is already registered")
         self.commands[cmd.name] = cmd
         self.recent_commands[cmd.name] = cmd
 

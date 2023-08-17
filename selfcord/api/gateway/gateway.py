@@ -71,8 +71,7 @@ class Gateway:
                 elif op == self.DISPATCH:
                     if hasattr(self.handler, f"handle_{event.lower()}"):
                         method = getattr(
-                            self.handler, f"handle_{event.lower()}"
-                        )
+                            self.handler, f"handle_{event.lower()}")
                         asyncio.create_task(method(data))
                     else:
                         print(event)

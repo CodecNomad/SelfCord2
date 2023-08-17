@@ -13,10 +13,8 @@ class LoginFailure(SelfcordException):
 class Unauthorised(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
-            message = (
-                message
-                .replace('@everyone', '@\u200beveryone')
-                .replace('@here', '@\u200bhere')
+            message = message.replace("@everyone", "@\u200beveryone").replace(
+                "@here", "@\u200bhere"
             )
         super().__init__(message, args)
 
@@ -24,10 +22,8 @@ class Unauthorised(SelfcordException):
 class BadRequest(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
-            message = (
-                message
-                .replace('@everyone', '@\u200beveryone')
-                .replace('@here', '@\u200bhere')
+            message = message.replace("@everyone", "@\u200beveryone").replace(
+                "@here", "@\u200bhere"
             )
         super().__init__(message, args)
 
@@ -35,10 +31,8 @@ class BadRequest(SelfcordException):
 class UnknownError(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
-            message = (
-                message
-                .replace('@everyone', '@\u200beveryone')
-                .replace('@here', '@\u200bhere')
+            message = message.replace("@everyone", "@\u200beveryone").replace(
+                "@here", "@\u200bhere"
             )
         super().__init__(message, args)
 
@@ -46,10 +40,8 @@ class UnknownError(SelfcordException):
 class NonImplementedError(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
-            message = (
-                message
-                .replace('@everyone', '@\u200beveryone')
-                .replace('@here', '@\u200bhere')
+            message = message.replace("@everyone", "@\u200beveryone").replace(
+                "@here", "@\u200bhere"
             )
         super().__init__(message, args)
 
@@ -57,9 +49,7 @@ class NonImplementedError(SelfcordException):
 class ServiceUnavailable(SelfcordException):
     def __init__(self, message: Optional[str] = None, *args: Any) -> None:
         if message is not None:
-            message = (
-                message
-                .replace('@everyone', '@\u200beveryone')
-                .replace('@here', '@\u200bhere')
+            message = message.replace("@everyone", "@\u200beveryone").replace(
+                "@here", "@\u200bhere"
             )
         super().__init__(message, args)

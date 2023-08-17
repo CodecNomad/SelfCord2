@@ -11,7 +11,6 @@ class Handler:
             for guild in guilds:
                 self.bot.user.guilds.append(Guild(guild, self.bot))
 
-
             print(len(self.bot.user.guilds))
             for guild in self.bot.user.guilds:
                 print(guild.name)

@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from .assets import Asset
 from .guild import Guild, Role
+
 if TYPE_CHECKING:
     from ..bot import Bot
 
@@ -14,15 +15,15 @@ class User:
 
     def _update(self, payload: dict):
         self.name: Optional[str] = payload.get("username")
-        self.id: int = payload['id']
+        self.id: int = payload["id"]
         self.discriminator: Optional[str] = payload.get("discriminator")
         self.avatar: Optional[Asset] = (
-            Asset(self.id, payload['avatar']).from_avatar()
+            Asset(self.id, payload["avatar"]).from_avatar()
             if payload.get("avatar") is not None
             else None
         )
         self.banner: Optional[Asset] = (
-            Asset(self.id, payload['banner']).from_avatar()
+            Asset(self.id, payload["banner"]).from_avatar()
             if payload.get("banner") is not None
             else None
         )
@@ -30,12 +31,10 @@ class User:
         self.accent_color: Optional[str] = payload.get("accent_color")
         self.display_name: Optional[str] = payload.get("global_name")
         self.flags: Optional[int] = payload.get("flags")
-        self.avatar_decoration: Optional[str] = payload.get("avatar_decoration")
-        self.is_bot = (
-            payload['bot']
-            if payload.get('bot') is not None
-            else False
-        )
+        self.avatar_decoration: Optional[str] = payload.get(
+            "avatar_decoration")
+        self.is_bot = payload["bot"] if payload.get(
+            "bot") is not None else False
 
     # TODO: when http is correctly made I will add methods
 

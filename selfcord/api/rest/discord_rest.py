@@ -64,46 +64,38 @@ class DiscordHttp:
 
     async def create_session(self):
         headers = {
-            "Accept-Encoding":
-            "gzip, deflate, br",
-            "user-agent": ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
-                           "AppleWebKit/537.36 (KHTML, like Gecko) "
-                           "discord/1.0.9016 Chrome/108.0.5359.215 "
-                           "Electron/22.3.12 Safari/537.36"),
-            "Content-Type":
-            "application/json",
-            "X-Discord-Locale":
-            "en-GB",
-            "X-context-properties":
-            ("eyJsb2NhdGlvbiI6Ikludml0ZSBCdXR0b24gRW1iZWQiLCJsb2N"
-             "hdGlvbl9ndWlsZF9pZCI6bnVsbCwibG9jYXRpb25fY2hhbm5lbF9pZCI"
-             "6IjEwOTkwOTMxODEy"
-             "NTUxNDM1MjUiLCJsb2NhdGlvbl9jaGFubmVsX3R5cGUiOjEsImxvY2F0"
-             "aW9uX21lc3NhZ2VfaWQiOiIxMTE2NTE0MDMyODk2MTgwMjU0In0="),
-            "connection":
-            "keep-alive",
-            "Sec-Fetch-Dest":
-            "empty",
-            "Sec-Fetch-Mode":
-            "cors",
-            "Sec-Fetch-Site":
-            "same-origin",
-            "sec-ch-ua-platform":
-            '"Windows"',
-            "origin":
-            "https://discord.com",
-            "DNT":
-            "1",
-            "referrer-policy":
-            "strict-origin-when-cross-origin",
-            "x-debug-options": ("logGatewayEvents,"
-                                "logOverlayEvents,"
-                                "logAnalyticsEvents,"
-                                "bugReporterEnabled"),
-            "x-discord-timezone":
-            "Europe/London",
-            "TE":
-            "trailers",
+            "Accept-Encoding": "gzip, deflate, br",
+            "user-agent": (
+                "Mozilla/5.0 (Windows NT 10.0; WOW64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "discord/1.0.9016 Chrome/108.0.5359.215 "
+                "Electron/22.3.12 Safari/537.36"
+            ),
+            "Content-Type": "application/json",
+            "X-Discord-Locale": "en-GB",
+            "X-context-properties": (
+                "eyJsb2NhdGlvbiI6Ikludml0ZSBCdXR0b24gRW1iZWQiLCJsb2N"
+                "hdGlvbl9ndWlsZF9pZCI6bnVsbCwibG9jYXRpb25fY2hhbm5lbF9pZCI"
+                "6IjEwOTkwOTMxODEy"
+                "NTUxNDM1MjUiLCJsb2NhdGlvbl9jaGFubmVsX3R5cGUiOjEsImxvY2F0"
+                "aW9uX21lc3NhZ2VfaWQiOiIxMTE2NTE0MDMyODk2MTgwMjU0In0="
+            ),
+            "connection": "keep-alive",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+            "sec-ch-ua-platform": '"Windows"',
+            "origin": "https://discord.com",
+            "DNT": "1",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "x-debug-options": (
+                "logGatewayEvents,"
+                "logOverlayEvents,"
+                "logAnalyticsEvents,"
+                "bugReporterEnabled"
+            ),
+            "x-discord-timezone": "Europe/London",
+            "TE": "trailers",
         }
         additional_headers = {}
         if (self.token is not None) and (self.fingerprint is not None):
@@ -134,8 +126,7 @@ class DiscordHttp:
         )
 
     async def get_fingerprint(self):
-        self.fingerprint = (await self.request("GET",
-                                               "/experiments"))["fingerprint"]
+        self.fingerprint = (await self.request("GET", "/experiments"))["fingerprint"]
 
     async def get_cookie(self):
         if self.session is None:
@@ -161,9 +152,7 @@ class DiscordHttp:
 
     async def static_login(self, token: str):
         self.token = token
-        return await self.request("GET",
-                                  "/users/@me",
-                                  headers={"authorization": token})
+        return await self.request("GET", "/users/@me", headers={"authorization": token})
 
     async def close(self):
         if self.session is not None:
@@ -174,9 +163,9 @@ class DiscordHttp:
         while True:
             try:
                 if self.session is not None:
-                    resp = await self.session.request(method,
-                                                      self.ROOT + endpoint,
-                                                      **kwargs)
+                    resp = await self.session.request(
+                        method, self.ROOT + endpoint, **kwargs
+                    )
                     if resp.ok:
                         return await resp.json()
 

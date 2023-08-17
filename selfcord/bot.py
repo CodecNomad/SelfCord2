@@ -7,15 +7,8 @@ from .api import DiscordHttp, Gateway
 from .models import Capabilities, Client, User
 
 
-
-
 class Bot:
-    def __init__(
-        self,
-        prefixes: list[str],
-        debug: bool = False,
-        userbot: bool = False
-    ):
+    def __init__(self, prefixes: list[str], debug: bool = False, userbot: bool = False):
         self.http: DiscordHttp = DiscordHttp(self)
         self.capabilities: Capabilities = Capabilities.default()
         self.gateway: Gateway = Gateway(self)
