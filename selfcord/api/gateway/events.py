@@ -1,4 +1,7 @@
+from typing import get_type_hints
 from ...models import Guild
+
+
 class Handler:
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -7,14 +10,15 @@ class Handler:
         guilds = data.get("guilds")
         if guilds:
             for guild in guilds:
-                
-                # TODO: We'll actually just make sure guild.py loads this shit correctly
-                properties = guild.get("properties")  # TODO: This is where guild attributes are loaded from
-                emojis = guild.get("emojis")
-                roles = guild.get("roles")
-                for role in roles:
-                    # TODO: Instantiate Roles for the particular guild
-                    pass
+                self.bot.user.guilds.append(Guild(guild, self.bot))
+
+
+            print(len(self.bot.user.guilds))
+            for guild in self.bot.user.guilds:
+                print(guild.name)
+                print(len(guild.emojis))
+                print(len(guild.stickers))
+                print(len(guild.roles))
 
     async def handle_ready_supplemental(self, data: dict):
         pass
@@ -24,6 +28,3 @@ class Handler:
 
     async def handle_message_delete(self, data: dict):
         pass
-
-    
-

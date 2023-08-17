@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from .assets import Asset
-
+from .guild import Guild, Role
 if TYPE_CHECKING:
     from ..bot import Bot
 
@@ -44,7 +44,7 @@ class Client(User):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self.guilds = []  # TODO: Create Guild class
+        self.guilds: list[Guild] = []
         self.friends: list[User] = []
         self.blocked: list[User] = []
         self.cached_users: list[User] = []
@@ -67,6 +67,6 @@ class Member(User):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self.roles = []  # TODO: Create Role class
+        self.roles: list[Role] = []
         self.permissions = 0  # TODO: Create Permission class
         super().__init__(payload, bot)
