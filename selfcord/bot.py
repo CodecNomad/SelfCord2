@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 import asyncio
 from .utils import Command, CommandCollection, BotException
 from .api import DiscordHttp, Gateway
-from .models import Capabilities, Client
+from .models import Capabilities, Client, User
 
 
 
@@ -26,7 +26,7 @@ class Bot:
         self.token: Optional[str] = None
         self.user: Optional[Client] = None
 
-    def cmd(self, description="", aliases=None):
+    def cmd(self, description: str = "", aliases: Optional[list[str]] = None):
         if aliases is None:
             aliases = []
         if isinstance(aliases, str):
@@ -51,7 +51,17 @@ class Bot:
                 self.user = Client(data, self)
                 await self.gateway.start(token)
             except KeyboardInterrupt:
-                await self.http.close()
-                await self.gateway.close()
+                await self.logout()
 
         asyncio.run(runner())
+
+    async def logout(self):
+        await self.http.close()
+        await self.gateway.close()
+
+    def fetch_user(self, user_id: int) -> Optional[User]:
+        if self.user:
+            for user in self.user.cached_users:
+                if user.id == user_id:
+                    return user
+        return None

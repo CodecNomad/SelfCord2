@@ -1,13 +1,14 @@
 from __future__ import annotations
+from typing import Self
 
 class Asset:
     def __init__(self, id: int, hash: str) -> None:
+        self.url = ""
         self._update(id, hash)
 
     def _update(self, id: int, hash: str):
         self.id: int = id
         self.hash: str = hash
-        self.url: str = ""
 
     def __str__(self) -> str:
         return self.url
@@ -16,6 +17,13 @@ class Asset:
         self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.png?size=4096"
         if self.hash.startswith("a_"):
             self.url: str = f"https://cdn.discordapp.com/avatars/{self.id}/{self.hash}.gif?size=4096"
+        return self
+
+    def from_icon(self) -> Self:
+        self.url: str = f"https://cdn.discordapp.com/icons/{self.id}/{self.hash}.png?size=4096"
+        if self.hash.startswith("a_"):
+            self.url: str = f"https://cdn.discordapp.com/icons/{self.id}/{self.hash}.gif?size=4096"
+        return self
 
     @property
     def is_animated(self):
