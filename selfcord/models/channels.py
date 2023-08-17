@@ -8,13 +8,25 @@ if TYPE_CHECKING:
     from ..api import DiscordHttp
 
 
-class Messageable:
-    def __init__(self, bot: Bot):
-        self.bot: Bot = bot
-        self.http: DiscordHttp = bot.http
+class Channel:
+    def __init__(self, payload: dict, bot: Bot):
+        self.bot = bot
+        self.http = bot.http
+        self._update(payload)
+
+    def _update(self, payload: dict):
+        self.id: int = int(payload["id"])
+        self.type: int = int(payload["type"])
+
+
+class Messageable(Channel):
+    def __init__(self, payload: dict, bot: Bot):
+        self.bot = bot
+        self.http = bot.http
         self.id: int
         self.guild_id: int
         self.type: int
+        super().__init__(payload, bot)
 
     @property
     def nonce(self) -> int:
@@ -23,9 +35,8 @@ class Messageable:
     async def send(
         self, content: str, files: Optional[list[str]] = None, tts: bool = False
     ):
-        if self.type == 1 or self.type == 3:
-            headers = {
-                "referer": f"https://canary.discord.com/channels/@me/{self.id}"}
+        if self.type in (1, 3):
+            headers = {"referer": f"https://canary.discord.com/channels/@me/{self.id}"}
         else:
             headers = {
                 "referer": f"https://canary.discord.com/channels/{self.guild_id}/{self.id}"
@@ -34,8 +45,7 @@ class Messageable:
             "POST",
             f"/channels/{self.id}/messages",
             headers=headers,
-            json={"content": content, "flags": 0,
-                  "tts": tts, "nonce": self.nonce},
+            json={"content": content, "flags": 0, "tts": tts, "nonce": self.nonce},
         )
 
 
@@ -44,15 +54,12 @@ class DMChannel(Messageable):
         self.bot = bot
         self.http = bot.http
         self._update(payload)
-        super().__init__(bot)
+        super().__init__(payload, bot)
 
     def _update(self, payload: dict):
-        self.type: int = 1
-        self.recipient: Optional[User] = self.bot.fetch_user(
-            payload["recipients"][0])
+        self.recipient: Optional[User] = self.bot.fetch_user(payload["recipients"][0])
         self.last_message_id: Optional[int] = payload.get("last_message_id")
         self.is_spam: Optional[bool] = payload.get("is_spam")
-        self.id: int = int(payload["id"])
 
 
 class GroupChannel(Messageable):
@@ -60,13 +67,11 @@ class GroupChannel(Messageable):
         self.bot = bot
         self.http = bot.http
         self._update(payload)
-        super().__init__(bot)
+        super().__init__(payload, bot)
 
     def _update(self, payload: dict):
-        self.type: int = 1
         self.recipient: list[Optional[User]] = [
             self.bot.fetch_user(user) for user in payload["recipients"]
         ]
         self.last_message_id: Optional[int] = payload.get("last_message_id")
         self.is_spam: Optional[bool] = payload.get("is_spam")
-        self.id: int = int(payload["id"])
