@@ -26,7 +26,11 @@ class Messageable(Channel):
         self.id: int
         self.guild_id: int
         self.type: int
+        self._update(payload)
         super().__init__(payload, bot)
+
+    def _update(self, payload: dict):
+        self.last_message_id: Optional[int] = payload.get("last_message_id")
 
     @property
     def nonce(self) -> int:
@@ -58,7 +62,7 @@ class DMChannel(Messageable):
 
     def _update(self, payload: dict):
         self.recipient: Optional[User] = self.bot.fetch_user(payload["recipients"][0])
-        self.last_message_id: Optional[int] = payload.get("last_message_id")
+
         self.is_spam: Optional[bool] = payload.get("is_spam")
 
 
@@ -73,5 +77,4 @@ class GroupChannel(Messageable):
         self.recipient: list[Optional[User]] = [
             self.bot.fetch_user(user) for user in payload["recipients"]
         ]
-        self.last_message_id: Optional[int] = payload.get("last_message_id")
         self.is_spam: Optional[bool] = payload.get("is_spam")
