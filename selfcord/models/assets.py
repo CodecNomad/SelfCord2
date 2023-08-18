@@ -3,11 +3,11 @@ from typing import Self
 
 
 class Asset:
-    def __init__(self, id: int, hash: str) -> None:
+    def __init__(self, id: str, hash: str) -> None:
         self.url: str = ""
         self._update(id, hash)
 
-    def _update(self, id: int, hash: str):
+    def _update(self, id: str, hash: str):
         self.id: int = id
         self.hash: str = hash
 
