@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from .assets import Asset
 from .guild import Guild, Role
+from .channels import Channel
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -47,6 +48,7 @@ class Client(User):
         self.friends: list[User] = []
         self.blocked: list[User] = []
         self.cached_users: list[User] = []
+        self.cached_channels: list[Channel] = []
         self._update(payload)
         super().__init__(payload, bot)
 

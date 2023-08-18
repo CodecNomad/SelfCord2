@@ -1,8 +1,8 @@
 from __future__ import annotations
+import itertools
 from typing import TYPE_CHECKING, Optional
 from .assets import Asset
-import itertools
-
+from .channels import Convert
 if TYPE_CHECKING:
     from ..bot import Bot
 
@@ -14,20 +14,16 @@ class Guild:
         self._update(payload)
 
     def _update(self, payload: dict):
-
+        self.channels: list[Channel] = []
         self.emojis: list[Emoji] = []
         self.stickers: list[Sticker] = []
         self.roles: list[Role] = []
         # MUH OPTIMISATIONS: Zip Longest very cool bro
         for emoji, sticker, role, channel in itertools.zip_longest(
-            payload['emojis']
-            if payload.get("emojis") is not None else [],
-            payload['stickers']
-            if payload.get("stickers") is not None else [],
-            payload['roles']
-            if payload.get("roles") is not None else [],
-            payload['channels']
-            if payload.get("channels") is not None else [],
+            payload["emojis"] if payload.get("emojis") is not None else [],
+            payload["stickers"] if payload.get("stickers") is not None else [],
+            payload["roles"] if payload.get("roles") is not None else [],
+            payload["channels"] if payload.get("channels") is not None else [],
         ):
             if emoji is not None:
                 self.emojis.append(Emoji(emoji, self.bot))
@@ -38,9 +34,11 @@ class Guild:
             if role is not None:
                 self.roles.append(Role(role, self.bot))
 
+            if channel is not None:
+                chan = Convert(channel, self.bot)
+                self.channels.append(chan)
+                self.bot.user.cached_channels.append(chan) if self.bot.user is not None else ""
 
-        
-        channels = payload.get("channels")  # TODO: Create Channel objects
         self.member_count = payload.get("member_count")
         self.lazy = payload.get("lazy")
         self.large = payload.get("large")

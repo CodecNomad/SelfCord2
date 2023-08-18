@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Self
-from .users import User
+from typing import TYPE_CHECKING, Optional
 from .assets import Asset
 import random
 
 if TYPE_CHECKING:
+    from .users import User
     from ..bot import Bot
     from ..api import DiscordHttp
 
@@ -12,16 +12,13 @@ if TYPE_CHECKING:
 class Channel:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
-        self.http = bot.http
+        self.http: DiscordHttp = bot.http
         self._update(payload)
 
     def _update(self, payload: dict):
         self.id: int = int(payload["id"])
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
-
-
-    
 
 
 class Messageable(Channel):
@@ -45,7 +42,8 @@ class Messageable(Channel):
         self, content: str, files: Optional[list[str]] = None, tts: bool = False
     ):
         if self.type in (1, 3):
-            headers = {"referer": f"https://canary.discord.com/channels/@me/{self.id}"}
+            headers = {
+                "referer": f"https://canary.discord.com/channels/@me/{self.id}"}
         else:
             headers = {
                 "referer": f"https://canary.discord.com/channels/{self.guild_id}/{self.id}"
@@ -54,7 +52,8 @@ class Messageable(Channel):
             "POST",
             f"/channels/{self.id}/messages",
             headers=headers,
-            json={"content": content, "flags": 0, "tts": tts, "nonce": self.nonce},
+            json={"content": content, "flags": 0,
+                  "tts": tts, "nonce": self.nonce},
         )
 
 
@@ -66,9 +65,9 @@ class DMChannel(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload: dict):
-        self.recipient: Optional[User] = self.bot.fetch_user(payload["recipients"][0])
+        self.recipient: Optional[User] = self.bot.fetch_user(
+            payload["recipients"][0])
         self.is_spam: Optional[bool] = payload.get("is_spam")
-
 
 
 class GroupChannel(Messageable):
@@ -84,12 +83,13 @@ class GroupChannel(Messageable):
         ]
         self.is_spam: Optional[bool] = payload.get("is_spam")
         self.icon: Optional[Asset] = (
-            Asset(self.id, payload['icon']).from_icon()
+            Asset(self.id, payload["icon"]).from_icon()
             if payload.get("icon") is not None
             else None
         )
         self.name: Optional[str] = payload.get("name")
-        self.last_pin_timestamp: Optional[int] = payload.get("last_pin_timestamp")
+        self.last_pin_timestamp: Optional[int] = payload.get(
+            "last_pin_timestamp")
 
 
 class TextChannel(Messageable):
@@ -103,6 +103,10 @@ class TextChannel(Messageable):
         self.guild_id = payload.get("guild_id")
         self.category_id = payload.get("parent_id")
         self.position = payload.get("position")
+        self.rate_limit_per_user = payload.get("rate_limit_per_user")
+        self.name = payload.get("name")
+        self.last_pin_timestamp = payload.get("last_pin_timestamp")
+
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
@@ -115,9 +119,17 @@ class VoiceChannel(Messageable):
 
     def _update(self, payload):
         self.guild_id = payload.get("guild_id")
-        self.category_id = payload.get("category_id")
+        self.category_id = payload.get("parent_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
+        self.user_limit = payload.get("user_limit")
+        self.topic = payload.get("topic")
+        self.rtc_region = payload.get("rtc_region")
+        self.slowdown = payload.get("rate_limit_per_user")
+        self.nsfw = payload.get("nsfw")
+        self.name = payload.get("name")
+        self.icon_emoji = payload.get("icon_emoji")
+        self.bitrate = payload.get("bitrate")
 
 
 class Category(Messageable):
@@ -128,6 +140,7 @@ class Category(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -141,6 +154,7 @@ class Announcement(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -154,6 +168,7 @@ class AnnouncementThread(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -167,6 +182,7 @@ class PublicThread(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -180,6 +196,7 @@ class PrivateThread(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -193,6 +210,7 @@ class StageChannel(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -206,6 +224,7 @@ class Directory(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
@@ -219,8 +238,22 @@ class ForumChannel(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
+        self.topic = payload.get("topic")
+        self.template = payload.get("template")
+        self.slowdown = payload.get("rate_limit_per_user")
+        self.category_id = payload.get("category_id")
+        self.nsfw = payload.get("nsfw")
+        self.default_thread_rate_limit_per_user = payload.get(
+            "default_thread_rate_limit_per_user"
+        )
+        self.default_sort_order = payload.get("default_sort_order")
+        self.default_reaction_emoji = payload.get("default_reaction_emoji")
+        self.default_forum_layout = payload.get("default_forum_layout")
+        self.available_tags = payload.get("available_tags")
+
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
@@ -232,6 +265,39 @@ class MediaChannel(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
         self.permission_overwrites = payload.get("permission_overwrites")
+
+
+class Convert(Channel):
+    def __new__(cls, payload: dict, bot: Bot) -> Channel:
+        tpe = payload["type"]
+        if tpe == 0:
+            return TextChannel(payload, bot)
+        if tpe == 1:
+            return DMChannel(payload, bot)
+        if tpe == 2:
+            return VoiceChannel(payload, bot)
+        if tpe == 3:
+            return GroupChannel(payload, bot)
+        if tpe == 4:
+            return Category(payload, bot)
+        if tpe == 5:
+            return Announcement(payload, bot)
+        if tpe == 10:
+            return AnnouncementThread(payload, bot)
+        if tpe == 11:
+            return PublicThread(payload, bot)
+        if tpe == 12:
+            return PrivateThread(payload, bot)
+        if tpe == 13:
+            return StageChannel(payload, bot)
+        if tpe == 14:
+            return Directory(payload, bot)
+        if tpe == 15:
+            return ForumChannel(payload, bot)
+        if tpe == 16:
+            return MediaChannel(payload, bot)
+        return TextChannel(payload, bot)
