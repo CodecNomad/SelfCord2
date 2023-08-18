@@ -50,7 +50,7 @@ class User:
 
     async def open_dm(self):
         json = await self.http.request("post", base + "/channels", json={"recipients": [self.id]})
-        return DMChannel(self.bot, json)
+        return DMChannel(json, self.bot)
 
 class Client(User):
     def __init__(self, payload: dict, bot: Bot):
