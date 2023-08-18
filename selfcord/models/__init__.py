@@ -16,5 +16,6 @@ from .channels import (
     StageChannel,
     ForumChannel,
     MediaChannel,
-    Convert
+    Convert,
+    Channel
 )

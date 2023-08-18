@@ -34,11 +34,12 @@ class Handler:
             if relation is not None:
                 check_user = self.bot.fetch_user(relation['id'])
                 if check_user is None:
-                    relation = User(relation, self.bot)
-                    self.bot.user.cached_users.append(relation)
-                    if relation['type'] == 1:
-                        self.bot.user.friends.append(relation)
-                        
+                    user = User(relation, self.bot)
+                    self.bot.user.cached_users.append(user)
+                    if relation["type"] == 1:
+                        self.bot.user.friends.append(user)
+                    if relation["type"] == 2:
+                        self.bot.user.blocked.append(user)
                 else:
                     check_user._update(user)
 

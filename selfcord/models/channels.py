@@ -23,6 +23,7 @@ class Channel:
 
 class Messageable(Channel):
     def __init__(self, payload: dict, bot: Bot):
+        print(self.id)
         self.bot = bot
         self.http = bot.http
         self.id: int
@@ -57,7 +58,7 @@ class Messageable(Channel):
         )
 
 
-class DMChannel(Messageable):
+class DMChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -66,11 +67,13 @@ class DMChannel(Messageable):
 
     def _update(self, payload: dict):
         self.recipient: Optional[User] = self.bot.fetch_user(
-            payload["recipients"][0])
+            payload["recipients"][0] if payload.get(
+                "recipients") is not None else []
+        )
         self.is_spam: Optional[bool] = payload.get("is_spam")
 
 
-class GroupChannel(Messageable):
+class GroupChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -78,9 +81,11 @@ class GroupChannel(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload: dict):
-        self.recipient: list[Optional[User]] = [
-            self.bot.fetch_user(user) for user in payload["recipients"]
-        ]
+        self.recipient: list[Optional[User]] = (
+            [self.bot.fetch_user(user) for user in payload["recipients"]]
+            if payload.get("recipients") is not None
+            else []
+        )
         self.is_spam: Optional[bool] = payload.get("is_spam")
         self.icon: Optional[Asset] = (
             Asset(self.id, payload["icon"]).from_icon()
@@ -92,7 +97,7 @@ class GroupChannel(Messageable):
             "last_pin_timestamp")
 
 
-class TextChannel(Messageable):
+class TextChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -110,7 +115,7 @@ class TextChannel(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class VoiceChannel(Messageable):
+class VoiceChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -132,7 +137,7 @@ class VoiceChannel(Messageable):
         self.bitrate = payload.get("bitrate")
 
 
-class Category(Messageable):
+class Category(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -146,7 +151,7 @@ class Category(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class Announcement(Messageable):
+class Announcement(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -160,7 +165,7 @@ class Announcement(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class AnnouncementThread(Messageable):
+class AnnouncementThread(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -174,7 +179,7 @@ class AnnouncementThread(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class PublicThread(Messageable):
+class PublicThread(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -188,7 +193,7 @@ class PublicThread(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class PrivateThread(Messageable):
+class PrivateThread(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -202,7 +207,7 @@ class PrivateThread(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class StageChannel(Messageable):
+class StageChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -216,7 +221,7 @@ class StageChannel(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class Directory(Messageable):
+class Directory(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -230,7 +235,7 @@ class Directory(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class ForumChannel(Messageable):
+class ForumChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
@@ -257,7 +262,7 @@ class ForumChannel(Messageable):
         self.permission_overwrites = payload.get("permission_overwrites")
 
 
-class MediaChannel(Messageable):
+class MediaChannel(Messageable, Channel):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
