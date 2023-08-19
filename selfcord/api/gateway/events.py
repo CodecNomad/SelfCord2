@@ -1,5 +1,5 @@
 import itertools
-from ...models import Guild, Convert, User, TextChannel, PublicThread
+from ...models import Guild, Convert, User
 
 
 class Handler:
@@ -25,18 +25,19 @@ class Handler:
             if channel is not None:
                 chan = Convert(channel, self.bot)
                 self.bot.user.private_channels.append(chan)
-                self.bot.user.cached_channels.append(chan)
+                self.bot.user.cached_channels[chan.id] = chan
             if user is not None:
-                check_user = self.bot.fetch_user(user['id'])
+                check_user = self.bot.fetch_user(user["id"])
                 if check_user is None:
-                    self.bot.user.cached_users.append(User(user, self.bot))
+                    user = User(user, self.bot)
+                    self.bot.user.cached_users[user.id] = user
                 else:
                     check_user._update(user)
             if relation is not None:
-                check_user = self.bot.fetch_user(relation['id'])
+                check_user = self.bot.fetch_user(relation["id"])
                 if check_user is None:
                     user = User(relation, self.bot)
-                    self.bot.user.cached_users.append(user)
+                    self.bot.user.cached_users[user.id] = user
                     if relation["type"] == 1:
                         self.bot.user.friends.append(user)
                     if relation["type"] == 2:
@@ -48,7 +49,6 @@ class Handler:
         print(len(self.bot.user.cached_users))
         print(len(self.bot.user.cached_channels))
 
-
     async def handle_ready_supplemental(self, data: dict):
         pass
 
@@ -58,8 +58,6 @@ class Handler:
     async def handle_message_delete(self, data: dict):
         pass
 
-    async def handle_channel_create(self, data: dict):
-        self.bot.user.cached_channels[data['id']] = TextChannel(data, self.bot)
 
     async def handle_channel_delete(self, data: dict):
         pass
@@ -79,3 +77,5 @@ class Handler:
         pass
 
     # do you think we should do something with presences too?
+    async def hand_channel_create(self, data: dict):
+        self.bot.user.cached_channels[data["id"]] = Convert(data, self.bot)

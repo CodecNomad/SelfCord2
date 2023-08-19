@@ -54,14 +54,10 @@ class Bot:
 
     def fetch_user(self, user_id: str) -> Optional[User]:
         if self.user:
-            for user in self.user.cached_users:
-                if user.id == user_id:
-                    return user
+            return self.user.cached_users.get(user_id)
         return None
 
-    def fetch_channel(self, channel_id: str) -> Optional[Channel]:
+    def fetch_channel(self, channel_id: str) -> Optional[Messageable]:
         if self.user:
-            for channel in self.user.cached_channels:
-                if channel.id == channel_id:
-                    return channel
+            return self.user.cached_channels.get(channel_id)
         return None

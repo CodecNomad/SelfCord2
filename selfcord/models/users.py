@@ -70,8 +70,9 @@ class Client(User):
         self.friends: list[User] = []
         self.blocked: list[User] = []
         self.private_channels: list[Messageable] = []
-        self.cached_users: list[User] = []
-        self.cached_channels: list[Messageable] = []
+        self.cached_users: dict[str, User] = {}
+        self.cached_channels: dict[str, Messageable] = {}
+        self.cached_messages: dict[str, str] = {}
         self._update(payload)
         super().__init__(payload, bot)
 

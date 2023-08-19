@@ -63,7 +63,7 @@ class DMChannel(Messageable):
         self.flags = payload.get("flags")
         self.last_message_id: Optional[str] = payload.get("last_message_id")
         self.recipient: Optional[User] = self.bot.fetch_user(
-            payload["recipients"][0] if payload.get("recipients") is not None else []
+            payload["recipients"][0] if payload.get("recipients") is not None else ""
         )
         self.is_spam: Optional[bool] = payload.get("is_spam")
 
@@ -151,6 +151,9 @@ class Category(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.id: str = payload["id"]
+        self.type: int = int(payload["type"])
+        self.flags = payload.get("flags")
         self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
@@ -183,6 +186,9 @@ class AnnouncementThread(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.id: str = payload["id"]
+        self.type: int = int(payload["type"])
+        self.flags = payload.get("flags")
         self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
@@ -215,6 +221,9 @@ class PrivateThread(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.id: str = payload["id"]
+        self.type: int = int(payload["type"])
+        self.flags = payload.get("flags")
         self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")
@@ -247,6 +256,9 @@ class Directory(Messageable):
         super().__init__(payload, bot)
 
     def _update(self, payload):
+        self.id: str = payload["id"]
+        self.type: int = int(payload["type"])
+        self.flags = payload.get("flags")
         self.name = payload.get("name")
         self.guild_id = payload.get("guild_id")
         self.position = payload.get("position")

@@ -37,7 +37,8 @@ class Guild:
             if channel is not None:
                 chan = Convert(channel, self.bot)
                 self.channels.append(chan)
-                self.bot.user.cached_channels.append(chan) if self.bot.user is not None else ""
+                if self.bot.user:
+                    self.bot.user.cached_channels[chan.id] = chan
 
         self.member_count = payload.get("member_count")
         self.lazy = payload.get("lazy")
