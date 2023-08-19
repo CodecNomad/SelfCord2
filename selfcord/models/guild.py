@@ -45,9 +45,9 @@ class Guild:
         self.joined_at = payload.get("joined_at")
         properties: Optional[dict] = payload.get("properties")
         if properties:
-            self.id: int = int(properties["id"])
-            self.owner_id: Optional[int] = (
-                int(properties["owner_id"])
+            self.id: str = properties["id"]
+            self.owner_id: Optional[str] = (
+                properties["owner_id"]
                 if properties.get("owner_id") is not None
                 else None
             )
@@ -57,13 +57,13 @@ class Guild:
                 if properties.get("splash") is not None
                 else None
             )
-            self.nsfw_level: Optional[int] = (
-                int(properties["nsfw_level"])
+            self.nsfw_level: Optional[str] = (
+                properties["nsfw_level"]
                 if properties.get("nsfw_level") is not None
                 else None
             )
-            self.application_id: Optional[int] = (
-                int(properties["application_id"])
+            self.application_id: Optional[str] = (
+                properties["application_id"]
                 if properties.get("application_id") is not None
                 else None
             )
@@ -77,7 +77,7 @@ class Guild:
                 "default_message_notifications"
             )
             self.hub_type: Optional[int] = properties.get("hub_type")
-            self.afk_channel: Optional[int] = properties.get("afk_channel")
+            self.afk_channel: Optional[str] = properties.get("afk_channel")
             self.incidents_data: Optional[int] = properties.get(
                 "incidents_data")
             self.discovery_splash: Optional[Asset] = (
@@ -92,7 +92,7 @@ class Guild:
                 if properties.get("discovery_splash") is not None
                 else None
             )
-            self.latest_onboarding_question_id: Optional[int] = properties.get(
+            self.latest_onboarding_question_id: Optional[str] = properties.get(
                 "latest_onboarding_question_id"
             )
             self.explicit_content_filter: Optional[int] = properties.get(
@@ -104,9 +104,9 @@ class Guild:
                 "max_video_channel_users"
             )
             self.nsfw: Optional[bool] = properties.get("nsfw")
-            self.system_channel_id: Optional[int] = properties.get(
+            self.system_channel_id: Optional[str] = properties.get(
                 "system_channel_id")
-            self.rules_channel_id: Optional[int] = properties.get(
+            self.rules_channel_id: Optional[str] = properties.get(
                 "rules_channel_id")
             self.max_stage_video_channel_users: Optional[int] = properties.get(
                 "max_stage_video_channel_users"
@@ -148,7 +148,7 @@ class Emoji:
         self.name = payload.get("name")
         self.require_colons = payload.get("require_colons")
         self.managed = payload.get("managed")
-        self.id = int(payload["id"])
+        self.id = payload["id"]
         self.available = payload.get("available")
         self.animated = payload.get("animated")
 
@@ -166,7 +166,7 @@ class Role:
         self.name = payload.get("name")
         self.mentionable = payload.get("mentionable")
         self.managed = payload.get("managed")
-        self.id = int(payload["id"])
+        self.id = payload["id"]
         self.icon = payload.get("icon")
         self.hoist = payload.get("hoist")
         self.flags = payload.get("flags")

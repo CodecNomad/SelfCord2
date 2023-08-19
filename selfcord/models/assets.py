@@ -8,7 +8,7 @@ class Asset:
         self._update(id, hash)
 
     def _update(self, id: str, hash: str):
-        self.id: int = id
+        self.id: str = id
         self.hash: str = hash
 
     def __str__(self) -> str:

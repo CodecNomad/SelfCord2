@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 import asyncio
 from .utils import Command, CommandCollection, BotException
 from .api import DiscordHttp, Gateway
-from .models import Capabilities, Client, User, Channel
+from .models import Capabilities, Client, User, Messageable
 
 
 class Bot:
@@ -52,14 +52,14 @@ class Bot:
         await self.http.close()
         await self.gateway.close()
 
-    def fetch_user(self, user_id: int) -> Optional[User]:
+    def fetch_user(self, user_id: str) -> Optional[User]:
         if self.user:
             for user in self.user.cached_users:
                 if user.id == user_id:
                     return user
         return None
 
-    def fetch_channel(self, channel_id: int) -> Optional[Channel]:
+    def fetch_channel(self, channel_id: str) -> Optional[Channel]:
         if self.user:
             for channel in self.user.cached_channels:
                 if channel.id == channel_id:

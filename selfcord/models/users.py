@@ -2,13 +2,14 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from .assets import Asset
 from .guild import Guild, Role
-from .channels import Channel, DMChannel
+from .channels import DMChannel, Messageable
 
 if TYPE_CHECKING:
     from ..bot import Bot
 
 
 base = "https://discord.com/api/v9"
+
 
 class User:
     def __init__(self, payload: dict, bot: Bot):
@@ -18,7 +19,7 @@ class User:
 
     def _update(self, payload: dict):
         self.name: Optional[str] = payload.get("username")
-        self.id: str = payload["id"] # USER ID STAYS STRING
+        self.id: str = payload["id"]  # USER ID STAYS STRING
         self.discriminator: Optional[str] = payload.get("discriminator")
         self.avatar: Optional[Asset] = (
             Asset(self.id, payload["avatar"]).from_avatar()
@@ -40,17 +41,26 @@ class User:
             "bot") is not None else False
 
     async def friend(self):
-        await self.http.request("put", base + "/users/@me/relationships/" + self.id, json={})
+        await self.http.request(
+            "put", base + "/users/@me/relationships/" + self.id, json={}
+        )
 
     async def block(self):
-        await self.http.request("put", base + "/users/@me/relationships/" + self.id, json={"type": 2})
+        await self.http.request(
+            "put", base + "/users/@me/relationships/" + self.id, json={"type": 2}
+        )
 
     async def reset_relationship(self):
-        await self.http.request("delete", base + "/users/@me/relationships/" + self.id, json={})
+        await self.http.request(
+            "delete", base + "/users/@me/relationships/" + self.id, json={}
+        )
 
-    async def open_dm(self):
-        json = await self.http.request("post", base + "/channels", json={"recipients": [self.id]})
+    async def create_dm(self) -> DMChannel:
+        json = await self.http.request(
+            "post", base + "/channels", json={"recipients": [self.id]}
+        )
         return DMChannel(json, self.bot)
+
 
 class Client(User):
     def __init__(self, payload: dict, bot: Bot):
@@ -59,8 +69,9 @@ class Client(User):
         self.guilds: list[Guild] = []
         self.friends: list[User] = []
         self.blocked: list[User] = []
+        self.private_channels: list[Messageable] = []
         self.cached_users: list[User] = []
-        self.cached_channels: dict = {}
+        self.cached_channels: list[Messageable] = []
         self._update(payload)
         super().__init__(payload, bot)
 

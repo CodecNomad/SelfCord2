@@ -100,6 +100,7 @@ class Gateway:
                 "capabilities": self.capabilities.value,
                 "token": self.token,
                 "client_state": {
+                    "guild_versions": {},
                     "api_code_version": 0,
                     "highest_last_message_id": "0",
                     "initial_guild_id": None,
@@ -113,12 +114,15 @@ class Gateway:
                     "activities": [],
                     "afk": False,
                     "since": 0,
-                    "status": "dnd",
+                    "status": "online",
                 },
                 "properties": {
-                    "os": "Android",
-                    "browser": "Discord Android",
-                    "device": "Discord Android",
+                    "os": "Linux",
+                    "browser": "Discord Client",
+                    "browser_version": "22.3.12",
+                    "client_build_number": 221132,
+                    "client_event_source": None,
+                    "client_version": "0.0.162",
                     "browser_useragent": (
                         "Mozilla/5.0 (X11; Linux x86_64)"
                         "AppleWebKit/537.36 "
@@ -128,6 +132,11 @@ class Gateway:
                         "Electron/22.3.2 "
                         "Safari/537.36"
                     ),
+                    "distro": "\"Manjaro Linux\"",
+                    "native_build_number": None,
+                    "os_version": "5.10.189-1-MANJARO",
+                    "release_channel": "canary",
+                    "window_manager": "KDE, unknown",
                     "system-locale": "en-GB",
                     "os_arch": "x64",
                 },

@@ -7,17 +7,18 @@ class Handler:
         self.bot = bot
 
     async def handle_ready(self, data: dict):
-        guilds = data.get("guilds")
-        private_channels = data.get("private_channels")
-        users = data.get("users")
-        relationships = data.get("relationship")
-
+        guilds = data.get("guilds", [])
+        private_channels = data.get("private_channels", [])
+        users = data.get("users", [])
+        relationships = data.get("relationship", [])
+        merged_members = data.get("merged_members", [])
+        print(len(merged_members))
         # LOOK AT ALL THIS OPTIMISATION
         for guild, channel, user, relation in itertools.zip_longest(
-            guilds if guilds is not None else [],
-            private_channels if private_channels is not None else [],
-            users if users is not None else [],
-            relationships if relationships is not None else [],
+            guilds,
+            private_channels,
+            users,
+            relationships,
         ):
             if guild is not None:
                 self.bot.user.guilds.append(Guild(guild, self.bot))
@@ -42,6 +43,10 @@ class Handler:
                         self.bot.user.blocked.append(user)
                 else:
                     check_user._update(user)
+
+        print(len(self.bot.user.guilds))
+        print(len(self.bot.user.cached_users))
+        print(len(self.bot.user.cached_channels))
 
 
     async def handle_ready_supplemental(self, data: dict):

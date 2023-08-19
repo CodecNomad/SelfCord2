@@ -17,5 +17,5 @@ from .channels import (
     ForumChannel,
     MediaChannel,
     Convert,
-    Channel
+    Messageable
 )
