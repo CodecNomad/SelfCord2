@@ -1,5 +1,5 @@
 import itertools
-from ...models import Guild, Convert, User, Channel
+from ...models import Guild, Convert, User, TextChannel, PublicThread
 
 
 class Handler:
@@ -58,5 +58,24 @@ class Handler:
     async def handle_message_delete(self, data: dict):
         pass
 
-    async def hand_channel_create(self, data: dict):
-        self.bot.user.cached_channels[data['id']] = Channel(data, self.bot)
+    async def handle_channel_create(self, data: dict):
+        self.bot.user.cached_channels[data['id']] = TextChannel(data, self.bot)
+
+    async def handle_channel_delete(self, data: dict):
+        pass
+
+    async def handle_thread_create(self, data: dict):
+        pass
+        # cache[data['id']] = PublicThread(data)
+
+    async def handle_thread_delete(self, data: dict):
+        pass
+
+    async def handle_server_create(self, data: dict):
+        pass
+        # we gotta do some research on this one
+
+    async def handle_server_delete(self, data: dict):
+        pass
+
+    # do you think we should do something with presences too?
