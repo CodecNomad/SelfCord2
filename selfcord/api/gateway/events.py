@@ -1,5 +1,5 @@
 import itertools
-from ...models import Guild, Convert, User
+from ...models import Guild, Convert, User, Channel
 
 
 class Handler:
@@ -52,3 +52,6 @@ class Handler:
 
     async def handle_message_delete(self, data: dict):
         pass
+
+    async def hand_channel_create(self, data: dict):
+        self.bot.user.cached_channels[data['id']] = Channel(data, self.bot)

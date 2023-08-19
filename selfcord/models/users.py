@@ -60,7 +60,7 @@ class Client(User):
         self.friends: list[User] = []
         self.blocked: list[User] = []
         self.cached_users: list[User] = []
-        self.cached_channels: list[Channel] = []
+        self.cached_channels: dict = {}
         self._update(payload)
         super().__init__(payload, bot)
 
