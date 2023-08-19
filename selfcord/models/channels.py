@@ -2,12 +2,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 from .assets import Asset
 import random
+import asyncio
 
 if TYPE_CHECKING:
     from .users import User
     from ..bot import Bot
     from ..api import DiscordHttp
 
+
+base = "https://discord.com/api/v9"
 
 class Channel:
     def __init__(self, payload: dict, bot: Bot):
@@ -16,7 +19,7 @@ class Channel:
         self._update(payload)
 
     def _update(self, payload: dict):
-        self.id: int = int(payload["id"])
+        self.id = payload["id"] # ALL IDS ARE STRING
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
 
@@ -64,6 +67,12 @@ class DMChannel(Messageable, Channel):
         self.http = bot.http
         self._update(payload)
         super().__init__(payload, bot)
+
+    def __del__(self):
+        asyncio.run(self.delete())
+    async def delete(self):
+        await self.http.request("delete", base + "/channels/" + self.id + "?silent=false")
+
 
     def _update(self, payload: dict):
         self.recipient: Optional[User] = self.bot.fetch_user(
