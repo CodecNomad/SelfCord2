@@ -11,9 +11,9 @@ class Guild:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.channels: list[Channel] = []
         self.emojis: list[Emoji] = []
         self.stickers: list[Sticker] = []
@@ -142,9 +142,9 @@ class Emoji:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.roles = payload.get("roles")
         self.name = payload.get("name")
         self.require_colons = payload.get("require_colons")
@@ -158,9 +158,9 @@ class Role:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.unicode_emoji = payload.get("unicode_emoji")
         self.position = payload.get("position")
         self.permissions = payload.get("permissions")
@@ -178,9 +178,9 @@ class Sticker:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.type = payload.get("type")
         self.tags = payload.get("tags")
         self.name = payload.get("name")

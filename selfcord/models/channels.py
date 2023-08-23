@@ -46,7 +46,7 @@ class DMChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
     def __del__(self):
@@ -57,7 +57,7 @@ class DMChannel(Messageable):
             "delete", base + "/channels/" + self.id + "?silent=false"
         )
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -72,10 +72,10 @@ class GroupChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -99,10 +99,10 @@ class TextChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -121,10 +121,10 @@ class VoiceChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -147,10 +147,10 @@ class Category(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -164,10 +164,10 @@ class Announcement(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -182,10 +182,10 @@ class AnnouncementThread(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -199,10 +199,10 @@ class PublicThread(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -217,10 +217,10 @@ class PrivateThread(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -234,10 +234,10 @@ class StageChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -252,10 +252,10 @@ class Directory(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -269,10 +269,10 @@ class ForumChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")
@@ -300,10 +300,10 @@ class MediaChannel(Messageable):
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload):
+    def update(self, payload):
         self.id: str = payload["id"]
         self.type: int = int(payload["type"])
         self.flags = payload.get("flags")

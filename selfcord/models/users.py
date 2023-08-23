@@ -15,9 +15,9 @@ class User:
     def __init__(self, payload: dict, bot: Bot):
         self.bot = bot
         self.http = bot.http
-        self._update(payload)
+        self.update(payload)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.name: Optional[str] = payload.get("username")
         self.id: str = payload["id"]  # USER ID STAYS STRING
         self.discriminator: Optional[str] = payload.get("discriminator")
@@ -73,10 +73,10 @@ class Client(User):
         self.cached_users: dict[str, User] = {}
         self.cached_channels: dict[str, Messageable] = {}
         self.cached_messages: dict[str, str] = {}
-        self._update(payload)
+        self.update(payload)
         super().__init__(payload, bot)
 
-    def _update(self, payload: dict):
+    def update(self, payload: dict):
         self.verified = payload.get("verified")
         self.purchased_flags = payload.get("purchased_flags")
         self.pronouns = payload.get("pronouns")

@@ -5,9 +5,9 @@ from typing import Self
 class Asset:
     def __init__(self, id: str, hash: str) -> None:
         self.url: str = ""
-        self._update(id, hash)
+        self.update(id, hash)
 
-    def _update(self, id: str, hash: str):
+    def update(self, id: str, hash: str):
         self.id: str = id
         self.hash: str = hash
 

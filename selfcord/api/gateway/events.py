@@ -32,7 +32,7 @@ class Handler:
                     user = User(user, self.bot)
                     self.bot.user.cached_users[user.id] = user
                 else:
-                    check_user._update(user)
+                    check_user.update(user)
             if relation is not None:
                 check_user = self.bot.fetch_user(relation["id"])
                 if check_user is None:
@@ -43,7 +43,7 @@ class Handler:
                     if relation["type"] == 2:
                         self.bot.user.blocked.append(user)
                 else:
-                    check_user._update(user)
+                    check_user.update(user)
 
         print(len(self.bot.user.guilds))
         print(len(self.bot.user.cached_users))
