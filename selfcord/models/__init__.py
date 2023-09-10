@@ -19,3 +19,4 @@ from .channels import (
     Convert,
     Messageable
 )
+from .message import Message

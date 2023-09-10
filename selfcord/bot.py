@@ -2,9 +2,12 @@ from __future__ import annotations
 import inspect
 from typing import TYPE_CHECKING, Optional
 import asyncio
-from .utils import Command, CommandCollection, BotException
+from .utils import Command, CommandCollection, BotException, Context
 from .api import DiscordHttp, Gateway
-from .models import Capabilities, Client, User, Messageable
+from .models import Capabilities, Client, User, Messageable, Guild
+
+if TYPE_CHECKING:
+    from .models import Message
 
 
 class Bot:
@@ -52,6 +55,10 @@ class Bot:
         await self.http.close()
         await self.gateway.close()
 
+    async def process_commands(self, message: Message):
+        ctx = Context(message, self)
+        asyncio.create_task(ctx.invoke())
+
     def fetch_user(self, user_id: str) -> Optional[User]:
         if self.user:
             return self.user.cached_users.get(user_id)
@@ -60,4 +67,12 @@ class Bot:
     def fetch_channel(self, channel_id: str) -> Optional[Messageable]:
         if self.user:
             return self.user.cached_channels.get(channel_id)
+        return None
+
+    # Cry it's O(N) - max 100 guilds so it's cool
+
+    def fetch_guild(self, guild_id: str) -> Optional[Guild]:
+        for guild in self.user.guilds:
+            if guild.id == guild_id:
+                return guild
         return None

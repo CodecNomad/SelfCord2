@@ -64,7 +64,6 @@ class DiscordHttp:
 
     async def create_session(self):
         headers = {
-            "Accept-Encoding": "gzip, deflate, br",
             "user-agent": (
                 "Mozilla/5.0 (Windows NT 10.0; WOW64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "

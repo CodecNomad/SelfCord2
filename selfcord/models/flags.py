@@ -23,7 +23,7 @@ class Capabilities(Flags):
         # Discum uses 4093
         # Desktop client uses 16381
         # Discord.py-self uses 8189
-        return cls.from_value(16381)
+        return cls.from_value(8189)
 
     @classmethod
     def lazy_user_notes(cls: Type[Self]) -> Self:

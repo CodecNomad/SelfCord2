@@ -73,8 +73,7 @@ class Gateway:
                         method = getattr(
                             self.handler, f"handle_{event.lower()}")
                         asyncio.create_task(method(data))
-                    else:
-                        print(event)
+                    print(event)
 
     async def connect(self):
         self.ws = await websockets.connect(
@@ -132,7 +131,7 @@ class Gateway:
                         "Electron/22.3.2 "
                         "Safari/537.36"
                     ),
-                    "distro": "\"Manjaro Linux\"",
+                    "distro": '"Manjaro Linux"',
                     "native_build_number": None,
                     "os_version": "5.10.189-1-MANJARO",
                     "release_channel": "canary",
@@ -140,6 +139,18 @@ class Gateway:
                     "system-locale": "en-GB",
                     "os_arch": "x64",
                 },
+            },
+        }
+        await self.send_json(payload)
+
+    async def gather_members(self, guild_id: str, channel_id: str):
+        payload = {
+            "op": 14,
+            "d": {
+                "guild_id": guild_id,
+                "channels": {
+                    channel_id: [[0, 99]]
+                }
             },
         }
         await self.send_json(payload)

@@ -10,6 +10,10 @@ if TYPE_CHECKING:
 
 base = "https://discord.com/api/v9"
 
+# Realise this might be fucked because my subclassism didn't work with channels
+# So basically guys my epic OOP magic didn't work this is indeed fucked
+# Time to copy and paste everything! Actually methods should be fine, attrs for some reason don't wanna work
+
 
 class User:
     def __init__(self, payload: dict, bot: Bot):
@@ -77,6 +81,27 @@ class Client(User):
         super().__init__(payload, bot)
 
     def update(self, payload: dict):
+        self.name: Optional[str] = payload.get("username")
+        self.id: str = payload["id"]  # USER ID STAYS STRING
+        self.discriminator: Optional[str] = payload.get("discriminator")
+        self.avatar: Optional[Asset] = (
+            Asset(self.id, payload["avatar"]).from_avatar()
+            if payload.get("avatar") is not None
+            else None
+        )
+        self.banner: Optional[Asset] = (
+            Asset(self.id, payload["banner"]).from_avatar()
+            if payload.get("banner") is not None
+            else None
+        )
+        self.banner_color: Optional[str] = payload.get("banner_color")
+        self.accent_color: Optional[str] = payload.get("accent_color")
+        self.display_name: Optional[str] = payload.get("global_name")
+        self.flags: Optional[int] = payload.get("flags")
+        self.avatar_decoration: Optional[str] = payload.get(
+            "avatar_decoration")
+        self.is_bot = payload["bot"] if payload.get(
+            "bot") is not None else False
         self.verified = payload.get("verified")
         self.purchased_flags = payload.get("purchased_flags")
         self.pronouns = payload.get("pronouns")

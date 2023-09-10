@@ -1,5 +1,5 @@
 import itertools
-from ...models import Guild, Convert, User
+from ...models import Guild, Convert, User, Message
 
 
 class Handler:
@@ -12,7 +12,6 @@ class Handler:
         users = data.get("users", [])
         relationships = data.get("relationship", [])
         merged_members = data.get("merged_members", [])
-        print(len(merged_members))
         # LOOK AT ALL THIS OPTIMISATION
         for guild, channel, user, relation in itertools.zip_longest(
             guilds,
@@ -45,15 +44,15 @@ class Handler:
                 else:
                     check_user.update(user)
 
-        print(len(self.bot.user.guilds))
-        print(len(self.bot.user.cached_users))
-        print(len(self.bot.user.cached_channels))
+
 
     async def handle_ready_supplemental(self, data: dict):
         pass
 
     async def handle_message_create(self, data: dict):
-        pass
+        message = Message(data, self.bot)
+        self.bot.user.cached_messages[message.id] = message
+        await self.bot.process_commands(message)
 
     async def handle_message_delete(self, data: dict):
         pass
@@ -72,10 +71,21 @@ class Handler:
     async def handle_server_create(self, data: dict):
         pass
         # we gotta do some research on this one
+        # No literally just do print(data) and run the event loop it will show you the data
 
     async def handle_server_delete(self, data: dict):
         pass
 
     # do you think we should do something with presences too?
+    # yesser, somehow we will connect User/Member with status/presence
     async def hand_channel_create(self, data: dict):
         self.bot.user.cached_channels[data["id"]] = Convert(data, self.bot)
+
+    async def handle_guild_member_list_update(self, data: dict):
+        print(data, "guild_member_list")
+
+    async def handle_thread_list_sync(self, data: dict):
+        print(data, "thread_list_sync")
+
+    async def handle_guild_member_chunk(self, data: dict):
+        print(data, "guild_member_chunk")
