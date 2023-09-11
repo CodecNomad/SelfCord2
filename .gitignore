@@ -3,3 +3,4 @@ __pycache__/
 main.py
 .mypy_cache/
 .idea/
+config.json
